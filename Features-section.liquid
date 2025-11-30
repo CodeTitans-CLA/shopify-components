@@ -1,0 +1,260 @@
+<section class="cvfc" style="--bg: {{ section.settings.bg | default: '#f8f8f8' }}; --text: {{ section.settings.text | default: '#111111' }}; --card-bg: {{ section.settings.card_bg | default: 'rgba(255,255,255,0.85)' }};">
+  <div class="cvfc__container">
+    {% if section.settings.heading != blank %}
+      <h2 class="cvfc__heading">{{ section.settings.heading }}</h2>
+    {% endif %}
+    {% if section.settings.subheading != blank %}
+      <p class="cvfc__subheading">{{ section.settings.subheading }}</p>
+    {% endif %}
+
+    <div class="cvfc__grid">
+      <!-- Left column -->
+      <div class="cvfc__col">
+        {% for block in section.blocks limit: 2 %}
+          <article class="cvfc__card reveal" {{ block.shopify_attributes }}>
+            {% if block.settings.icon != blank %}
+              <img class="cvfc__icon" src="{{ block.settings.icon | image_url: width: 80 }}" alt="">
+            {% endif %}
+            <h3 class="cvfc__card-title">{{ block.settings.title }}</h3>
+            <p class="cvfc__card-text">{{ block.settings.text }}</p>
+          </article>
+        {% endfor %}
+      </div>
+
+      <!-- Video center -->
+      <div class="cvfc__videowrap reveal">
+        <div class="cvfc__aspect r3x4">
+          {% if section.settings.video != blank %}
+            {{ section.settings.video | video_tag: autoplay: true, loop: true, muted: true, playsinline: true }}
+          {% elsif section.settings.video_url != blank %}
+            <video autoplay loop muted playsinline class="cvfc__video">
+              <source src="{{ section.settings.video_url }}" type="video/mp4">
+            </video>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- Right column -->
+      <div class="cvfc__col">
+        {% for block in section.blocks offset: 2 limit: 2 %}
+          <article class="cvfc__card reveal" {{ block.shopify_attributes }}>
+            {% if block.settings.icon != blank %}
+              <img class="cvfc__icon" src="{{ block.settings.icon | image_url: width: 80 }}" alt="">
+            {% endif %}
+            <h3 class="cvfc__card-title">{{ block.settings.title }}</h3>
+            <p class="cvfc__card-text">{{ block.settings.text }}</p>
+          </article>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+  <style>
+    .cvfc {
+      background: radial-gradient(circle at 20% 30%, #fafafa 0%, #ececec 100%);
+      color: var(--text);
+      padding: clamp(40px,5vw,80px) 0;
+    }
+    .cvfc__container {
+      max-width: 1300px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+    .cvfc__heading {
+      font-size: clamp(28px, 3vw, 38px);
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 8px;
+    }
+    .cvfc__subheading {
+      text-align: center;
+      opacity: .8;
+      margin-bottom: 48px;
+    }
+
+    .cvfc__grid {
+      display: grid;
+      grid-template-columns: 1fr minmax(280px,520px) 1fr;
+      gap: 24px;
+      align-items: center;
+    }
+    .cvfc__col {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    /* Gorgeous card style */
+    .cvfc__card {
+      position: relative;
+      background: var(--card-bg);
+      backdrop-filter: blur(10px);
+      border-radius: 18px;
+      box-shadow: 0 6px 26px rgba(0,0,0,.06);
+      border: 1px solid rgba(255,255,255,0.3);
+      padding: 22px 20px;
+      transition: all .35s ease;
+      transform: translateY(0);
+      overflow: hidden;
+    }
+    .cvfc__card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 16px 36px rgba(0,0,0,.12);
+    }
+    .cvfc__card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(145deg, rgba(255,255,255,0.15) 0%, transparent 60%);
+      opacity: 0;
+      transition: opacity .35s ease;
+    }
+    .cvfc__card:hover::before {
+      opacity: 1;
+    }
+
+    .cvfc__icon {
+      width: 48px;
+      height: 48px;
+      object-fit: cover;
+      margin-bottom: 10px;
+      transition: transform .4s ease;
+    }
+    .cvfc__card:hover .cvfc__icon {
+      transform: scale(1.08) rotate(-2deg);
+    }
+    .cvfc__card-title {
+      font-size: 18px;
+      font-weight: 600;
+      margin: 0 0 6px;
+    }
+    .cvfc__card-text {
+      margin: 0;
+      opacity: .85;
+      font-size: 15px;
+      line-height: 1.6;
+    }
+
+    /* Video */
+    .cvfc__videowrap {
+      display: flex;
+      justify-content: center;
+    }
+    .cvfc__aspect {
+      width: 100%;
+      max-width: 400px;
+      aspect-ratio: 3/4;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 10px 40px rgba(0,0,0,.18);
+      position: relative;
+    }
+    .cvfc__aspect video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    /* Reveal animation */
+    .reveal {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+    .reveal.in {
+      opacity: 1;
+      transform: none;
+    }
+
+    /* Responsive */
+    @media(max-width: 992px) {
+      .cvfc__grid {
+        grid-template-columns: 1fr;
+        gap: 32px;
+      }
+      .cvfc__col {
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+      .cvfc__card {
+        flex: 1 1 45%;
+        text-align: center;
+      }
+      .cvfc__aspect {
+        max-width: 280px;
+      }
+    }
+  </style>
+
+  <script>
+    (function(){
+      const section = document.currentScript.closest('.cvfc');
+      if(!section) return;
+      const observer = new IntersectionObserver((entries)=>{
+        entries.forEach(entry=>{
+          if(entry.isIntersecting){
+            entry.target.classList.add('in');
+            observer.unobserve(entry.target);
+          }
+        });
+      },{threshold:0.15});
+      section.querySelectorAll('.reveal').forEach(el=>observer.observe(el));
+    })();
+  </script>
+</section>
+
+{% schema %}
+{
+  "name": "Video + 4 Cards Pro",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Our Features" },
+    { "type": "textarea", "id": "subheading", "label": "Subheading", "default": "Discover what makes us unique." },
+    { "type": "video", "id": "video", "label": "Upload video" },
+    { "type": "url", "id": "video_url", "label": "Or MP4 URL" },
+    { "type": "color", "id": "bg", "label": "Background", "default": "#f8f8f8" },
+    { "type": "color", "id": "text", "label": "Text color", "default": "#111111" },
+    { "type": "color", "id": "card_bg", "label": "Card background (semi-transparent)", "default": "rgba(255,255,255,0.85)" }
+  ],
+  "blocks": [
+    {
+      "type": "feature",
+      "name": "Feature Card",
+      "limit": 4,
+      "settings": [
+        { "type": "image_picker", "id": "icon", "label": "Icon (optional)" },
+        { "type": "text", "id": "title", "label": "Title", "default": "Premium Quality" },
+        { "type": "textarea", "id": "text", "label": "Description", "default": "Handcrafted with care using the finest materials." }
+      ]
+    }
+  ],
+  "presets": [{ "name": "Video + 4 Cards Pro" }]
+}
+{% endschema %}
+
+
+<script>
+
+<script>
+  (function(){
+    const sec = document.currentScript.closest('.cvfc');
+    if(!sec) return;
+    const aspect = sec.querySelector('.cvfc__aspect');
+    const setH = () => {
+      if(!aspect) return;
+      const h = aspect.getBoundingClientRect().height;
+      sec.style.setProperty('--video-h', `${Math.round(h)}px`);
+    };
+    setH();
+    // update on resize and when video metadata loads
+    window.addEventListener('resize', setH, { passive:true });
+    const vid = aspect && aspect.querySelector('video');
+    if(vid){
+      vid.addEventListener('loadedmetadata', setH, { passive:true });
+      vid.addEventListener('loadeddata', setH, { passive:true });
+      vid.addEventListener('play', setH, { passive:true });
+    }
+  })();
+</script>
+
+</script>
