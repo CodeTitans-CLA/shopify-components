@@ -1,0 +1,739 @@
+{% doc %}
+  @prompt
+    Give me a perfect looking refund policy for my page
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-refund-policy-{{ ai_gen_id }} {
+    max-width: {{ block.settings.max_width }}px;
+    margin: 0 auto;
+    padding: {{ block.settings.section_padding }}px 20px;
+    background-color: {{ block.settings.background_color }};
+    color: {{ block.settings.text_color }};
+  }
+
+  .ai-refund-policy__header-{{ ai_gen_id }} {
+    text-align: center;
+    margin-bottom: {{ block.settings.header_spacing }}px;
+    padding-bottom: {{ block.settings.header_spacing | divided_by: 2 }}px;
+    border-bottom: 2px solid {{ block.settings.accent_color }};
+  }
+
+  .ai-refund-policy__title-{{ ai_gen_id }} {
+    font-size: {{ block.settings.title_size }}px;
+    color: {{ block.settings.heading_color }};
+    margin: 0 0 16px 0;
+    font-weight: 700;
+    line-height: 1.2;
+  }
+
+  .ai-refund-policy__subtitle-{{ ai_gen_id }} {
+    font-size: {{ block.settings.subtitle_size }}px;
+    color: {{ block.settings.text_color }};
+    margin: 0;
+    opacity: 0.8;
+  }
+
+  .ai-refund-policy__content-{{ ai_gen_id }} {
+    margin-top: {{ block.settings.content_spacing }}px;
+  }
+
+  .ai-refund-policy__section-{{ ai_gen_id }} {
+    margin-bottom: {{ block.settings.section_spacing }}px;
+    padding: {{ block.settings.section_padding_inner }}px;
+    background-color: {{ block.settings.section_bg_color }};
+    border-radius: {{ block.settings.border_radius }}px;
+    border-left: 4px solid {{ block.settings.accent_color }};
+  }
+
+  .ai-refund-policy__section-title-{{ ai_gen_id }} {
+    font-size: {{ block.settings.section_title_size }}px;
+    color: {{ block.settings.heading_color }};
+    margin: 0 0 16px 0;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .ai-refund-policy__icon-{{ ai_gen_id }} {
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+    color: {{ block.settings.accent_color }};
+  }
+
+  .ai-refund-policy__text-{{ ai_gen_id }} {
+    font-size: {{ block.settings.text_size }}px;
+    line-height: 1.8;
+    margin: 0 0 16px 0;
+  }
+
+  .ai-refund-policy__text-{{ ai_gen_id }}:last-child {
+    margin-bottom: 0;
+  }
+
+  .ai-refund-policy__list-{{ ai_gen_id }} {
+    margin: 16px 0;
+    padding-left: 24px;
+  }
+
+  .ai-refund-policy__list-{{ ai_gen_id }} li {
+    font-size: {{ block.settings.text_size }}px;
+    line-height: 1.8;
+    margin-bottom: 12px;
+    position: relative;
+  }
+
+  .ai-refund-policy__list-{{ ai_gen_id }} li::marker {
+    color: {{ block.settings.accent_color }};
+  }
+
+  .ai-refund-policy__highlight-{{ ai_gen_id }} {
+    background-color: {{ block.settings.highlight_bg_color }};
+    padding: {{ block.settings.highlight_padding }}px;
+    border-radius: {{ block.settings.border_radius }}px;
+    margin: {{ block.settings.section_spacing }}px 0;
+    border: 2px solid {{ block.settings.accent_color }};
+  }
+
+  .ai-refund-policy__highlight-title-{{ ai_gen_id }} {
+    font-size: {{ block.settings.section_title_size }}px;
+    color: {{ block.settings.heading_color }};
+    margin: 0 0 12px 0;
+    font-weight: 600;
+  }
+
+  .ai-refund-policy__contact-{{ ai_gen_id }} {
+    text-align: center;
+    margin-top: {{ block.settings.content_spacing }}px;
+    padding: {{ block.settings.section_padding_inner }}px;
+    background-color: {{ block.settings.section_bg_color }};
+    border-radius: {{ block.settings.border_radius }}px;
+  }
+
+  .ai-refund-policy__contact-title-{{ ai_gen_id }} {
+    font-size: {{ block.settings.section_title_size }}px;
+    color: {{ block.settings.heading_color }};
+    margin: 0 0 16px 0;
+    font-weight: 600;
+  }
+
+  .ai-refund-policy__contact-info-{{ ai_gen_id }} {
+    font-size: {{ block.settings.text_size }}px;
+    margin-bottom: 8px;
+  }
+
+  .ai-refund-policy__contact-link-{{ ai_gen_id }} {
+    color: {{ block.settings.accent_color }};
+    text-decoration: none;
+    font-weight: 500;
+  }
+
+  .ai-refund-policy__contact-link-{{ ai_gen_id }}:hover {
+    text-decoration: underline;
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-refund-policy-{{ ai_gen_id }} {
+      padding: {{ block.settings.section_padding | times: 0.6 }}px 16px;
+    }
+
+    .ai-refund-policy__title-{{ ai_gen_id }} {
+      font-size: {{ block.settings.title_size | times: 0.7 }}px;
+    }
+
+    .ai-refund-policy__subtitle-{{ ai_gen_id }} {
+      font-size: {{ block.settings.subtitle_size | times: 0.85 }}px;
+    }
+
+    .ai-refund-policy__section-title-{{ ai_gen_id }} {
+      font-size: {{ block.settings.section_title_size | times: 0.85 }}px;
+    }
+
+    .ai-refund-policy__section-{{ ai_gen_id }} {
+      padding: {{ block.settings.section_padding_inner | times: 0.7 }}px;
+    }
+  }
+{% endstyle %}
+
+<div class="ai-refund-policy-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  <div class="ai-refund-policy__header-{{ ai_gen_id }}">
+    <h1 class="ai-refund-policy__title-{{ ai_gen_id }}">{{ block.settings.page_title }}</h1>
+    {% if block.settings.page_subtitle != blank %}
+      <p class="ai-refund-policy__subtitle-{{ ai_gen_id }}">{{ block.settings.page_subtitle }}</p>
+    {% endif %}
+  </div>
+
+  <div class="ai-refund-policy__content-{{ ai_gen_id }}">
+    {% if block.settings.show_intro %}
+      <div class="ai-refund-policy__section-{{ ai_gen_id }}">
+        <p class="ai-refund-policy__text-{{ ai_gen_id }}">
+          {{ block.settings.intro_text }}
+        </p>
+      </div>
+    {% endif %}
+
+    {% if block.settings.show_timeframe %}
+      <div class="ai-refund-policy__section-{{ ai_gen_id }}">
+        <h2 class="ai-refund-policy__section-title-{{ ai_gen_id }}">
+          <svg class="ai-refund-policy__icon-{{ ai_gen_id }}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <polyline points="12 6 12 12 16 14"></polyline>
+          </svg>
+          {{ block.settings.timeframe_title }}
+        </h2>
+        <p class="ai-refund-policy__text-{{ ai_gen_id }}">
+          {{ block.settings.timeframe_text }}
+        </p>
+      </div>
+    {% endif %}
+
+    {% if block.settings.show_conditions %}
+      <div class="ai-refund-policy__section-{{ ai_gen_id }}">
+        <h2 class="ai-refund-policy__section-title-{{ ai_gen_id }}">
+          <svg class="ai-refund-policy__icon-{{ ai_gen_id }}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+          {{ block.settings.conditions_title }}
+        </h2>
+        <p class="ai-refund-policy__text-{{ ai_gen_id }}">
+          {{ block.settings.conditions_intro }}
+        </p>
+        <ul class="ai-refund-policy__list-{{ ai_gen_id }}">
+          {% if block.settings.condition_1 != blank %}
+            <li>{{ block.settings.condition_1 }}</li>
+          {% endif %}
+          {% if block.settings.condition_2 != blank %}
+            <li>{{ block.settings.condition_2 }}</li>
+          {% endif %}
+          {% if block.settings.condition_3 != blank %}
+            <li>{{ block.settings.condition_3 }}</li>
+          {% endif %}
+          {% if block.settings.condition_4 != blank %}
+            <li>{{ block.settings.condition_4 }}</li>
+          {% endif %}
+          {% if block.settings.condition_5 != blank %}
+            <li>{{ block.settings.condition_5 }}</li>
+          {% endif %}
+        </ul>
+      </div>
+    {% endif %}
+
+    {% if block.settings.show_non_refundable %}
+      <div class="ai-refund-policy__section-{{ ai_gen_id }}">
+        <h2 class="ai-refund-policy__section-title-{{ ai_gen_id }}">
+          <svg class="ai-refund-policy__icon-{{ ai_gen_id }}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="15" y1="9" x2="9" y2="15"></line>
+            <line x1="9" y1="9" x2="15" y2="15"></line>
+          </svg>
+          {{ block.settings.non_refundable_title }}
+        </h2>
+        <p class="ai-refund-policy__text-{{ ai_gen_id }}">
+          {{ block.settings.non_refundable_intro }}
+        </p>
+        <ul class="ai-refund-policy__list-{{ ai_gen_id }}">
+          {% if block.settings.non_refundable_1 != blank %}
+            <li>{{ block.settings.non_refundable_1 }}</li>
+          {% endif %}
+          {% if block.settings.non_refundable_2 != blank %}
+            <li>{{ block.settings.non_refundable_2 }}</li>
+          {% endif %}
+          {% if block.settings.non_refundable_3 != blank %}
+            <li>{{ block.settings.non_refundable_3 }}</li>
+          {% endif %}
+          {% if block.settings.non_refundable_4 != blank %}
+            <li>{{ block.settings.non_refundable_4 }}</li>
+          {% endif %}
+        </ul>
+      </div>
+    {% endif %}
+
+    {% if block.settings.show_process %}
+      <div class="ai-refund-policy__section-{{ ai_gen_id }}">
+        <h2 class="ai-refund-policy__section-title-{{ ai_gen_id }}">
+          <svg class="ai-refund-policy__icon-{{ ai_gen_id }}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+            <polyline points="14 2 14 8 20 8"></polyline>
+            <line x1="16" y1="13" x2="8" y2="13"></line>
+            <line x1="16" y1="17" x2="8" y2="17"></line>
+            <polyline points="10 9 9 9 8 9"></polyline>
+          </svg>
+          {{ block.settings.process_title }}
+        </h2>
+        <p class="ai-refund-policy__text-{{ ai_gen_id }}">
+          {{ block.settings.process_text }}
+        </p>
+      </div>
+    {% endif %}
+
+    {% if block.settings.show_shipping %}
+      <div class="ai-refund-policy__section-{{ ai_gen_id }}">
+        <h2 class="ai-refund-policy__section-title-{{ ai_gen_id }}">
+          <svg class="ai-refund-policy__icon-{{ ai_gen_id }}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="1" y="3" width="15" height="13"></rect>
+            <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon>
+            <circle cx="5.5" cy="18.5" r="2.5"></circle>
+            <circle cx="18.5" cy="18.5" r="2.5"></circle>
+          </svg>
+          {{ block.settings.shipping_title }}
+        </h2>
+        <p class="ai-refund-policy__text-{{ ai_gen_id }}">
+          {{ block.settings.shipping_text }}
+        </p>
+      </div>
+    {% endif %}
+
+    {% if block.settings.show_highlight %}
+      <div class="ai-refund-policy__highlight-{{ ai_gen_id }}">
+        <h3 class="ai-refund-policy__highlight-title-{{ ai_gen_id }}">{{ block.settings.highlight_title }}</h3>
+        <p class="ai-refund-policy__text-{{ ai_gen_id }}">{{ block.settings.highlight_text }}</p>
+      </div>
+    {% endif %}
+
+    {% if block.settings.show_contact %}
+      <div class="ai-refund-policy__contact-{{ ai_gen_id }}">
+        <h2 class="ai-refund-policy__contact-title-{{ ai_gen_id }}">{{ block.settings.contact_title }}</h2>
+        {% if block.settings.contact_email != blank %}
+          <p class="ai-refund-policy__contact-info-{{ ai_gen_id }}">
+            Email: <a href="mailto:{{ block.settings.contact_email }}" class="ai-refund-policy__contact-link-{{ ai_gen_id }}">{{ block.settings.contact_email }}</a>
+          </p>
+        {% endif %}
+        {% if block.settings.contact_phone != blank %}
+          <p class="ai-refund-policy__contact-info-{{ ai_gen_id }}">
+            Phone: <a href="tel:{{ block.settings.contact_phone }}" class="ai-refund-policy__contact-link-{{ ai_gen_id }}">{{ block.settings.contact_phone }}</a>
+          </p>
+        {% endif %}
+      </div>
+    {% endif %}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Refund policy",
+  "tag": null,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Page header"
+    },
+    {
+      "type": "text",
+      "id": "page_title",
+      "label": "Title",
+      "default": "Refund Policy"
+    },
+    {
+      "type": "text",
+      "id": "page_subtitle",
+      "label": "Subtitle",
+      "default": "Your satisfaction is our priority"
+    },
+    {
+      "type": "header",
+      "content": "Introduction"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_intro",
+      "label": "Show introduction",
+      "default": true
+    },
+    {
+      "type": "textarea",
+      "id": "intro_text",
+      "label": "Introduction text",
+      "default": "We want you to be completely satisfied with your purchase. If you're not happy with your order, we're here to help with our straightforward refund policy."
+    },
+    {
+      "type": "header",
+      "content": "Refund timeframe"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_timeframe",
+      "label": "Show timeframe section",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "timeframe_title",
+      "label": "Title",
+      "default": "Refund Timeframe"
+    },
+    {
+      "type": "textarea",
+      "id": "timeframe_text",
+      "label": "Text",
+      "default": "You have 30 days from the date of delivery to request a refund. To be eligible for a return, your item must be unused and in the same condition that you received it. It must also be in the original packaging."
+    },
+    {
+      "type": "header",
+      "content": "Refund conditions"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_conditions",
+      "label": "Show conditions section",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "conditions_title",
+      "label": "Title",
+      "default": "Refund Conditions"
+    },
+    {
+      "type": "textarea",
+      "id": "conditions_intro",
+      "label": "Introduction",
+      "default": "To qualify for a refund, please ensure the following conditions are met:"
+    },
+    {
+      "type": "text",
+      "id": "condition_1",
+      "label": "Condition 1",
+      "default": "Item must be in original condition and packaging"
+    },
+    {
+      "type": "text",
+      "id": "condition_2",
+      "label": "Condition 2",
+      "default": "All tags and labels must be attached"
+    },
+    {
+      "type": "text",
+      "id": "condition_3",
+      "label": "Condition 3",
+      "default": "Proof of purchase or receipt must be provided"
+    },
+    {
+      "type": "text",
+      "id": "condition_4",
+      "label": "Condition 4",
+      "default": "Item must not show signs of wear or use"
+    },
+    {
+      "type": "text",
+      "id": "condition_5",
+      "label": "Condition 5",
+      "default": "Return must be initiated within the specified timeframe"
+    },
+    {
+      "type": "header",
+      "content": "Non-refundable items"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_non_refundable",
+      "label": "Show non-refundable section",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "non_refundable_title",
+      "label": "Title",
+      "default": "Non-Refundable Items"
+    },
+    {
+      "type": "textarea",
+      "id": "non_refundable_intro",
+      "label": "Introduction",
+      "default": "The following items cannot be refunded:"
+    },
+    {
+      "type": "text",
+      "id": "non_refundable_1",
+      "label": "Item 1",
+      "default": "Gift cards"
+    },
+    {
+      "type": "text",
+      "id": "non_refundable_2",
+      "label": "Item 2",
+      "default": "Downloadable software or digital products"
+    },
+    {
+      "type": "text",
+      "id": "non_refundable_3",
+      "label": "Item 3",
+      "default": "Personal care items and intimate products"
+    },
+    {
+      "type": "text",
+      "id": "non_refundable_4",
+      "label": "Item 4",
+      "default": "Sale or clearance items"
+    },
+    {
+      "type": "header",
+      "content": "Refund process"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_process",
+      "label": "Show process section",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "process_title",
+      "label": "Title",
+      "default": "How to Request a Refund"
+    },
+    {
+      "type": "textarea",
+      "id": "process_text",
+      "label": "Text",
+      "default": "To initiate a refund, please contact our customer service team with your order number and reason for return. Once your return is received and inspected, we will send you an email notification. If approved, your refund will be processed and automatically applied to your original method of payment within 5-10 business days."
+    },
+    {
+      "type": "header",
+      "content": "Shipping costs"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_shipping",
+      "label": "Show shipping section",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "shipping_title",
+      "label": "Title",
+      "default": "Return Shipping Costs"
+    },
+    {
+      "type": "textarea",
+      "id": "shipping_text",
+      "label": "Text",
+      "default": "You will be responsible for paying your own shipping costs for returning your item. Shipping costs are non-refundable. If you receive a refund, the cost of return shipping will be deducted from your refund."
+    },
+    {
+      "type": "header",
+      "content": "Highlight box"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_highlight",
+      "label": "Show highlight box",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "highlight_title",
+      "label": "Title",
+      "default": "Important Notice"
+    },
+    {
+      "type": "textarea",
+      "id": "highlight_text",
+      "label": "Text",
+      "default": "Refunds may take 5-10 business days to appear in your account depending on your bank or payment provider. If you haven't received your refund after this period, please contact us."
+    },
+    {
+      "type": "header",
+      "content": "Contact information"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_contact",
+      "label": "Show contact section",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "contact_title",
+      "label": "Title",
+      "default": "Questions About Refunds?"
+    },
+    {
+      "type": "text",
+      "id": "contact_email",
+      "label": "Email",
+      "default": "support@example.com"
+    },
+    {
+      "type": "text",
+      "id": "contact_phone",
+      "label": "Phone"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "max_width",
+      "min": 600,
+      "max": 1200,
+      "step": 50,
+      "unit": "px",
+      "label": "Maximum width",
+      "default": 900
+    },
+    {
+      "type": "range",
+      "id": "section_padding",
+      "min": 20,
+      "max": 100,
+      "step": 10,
+      "unit": "px",
+      "label": "Section padding",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "section_padding_inner",
+      "min": 10,
+      "max": 50,
+      "step": 5,
+      "unit": "px",
+      "label": "Inner section padding",
+      "default": 25
+    },
+    {
+      "type": "range",
+      "id": "header_spacing",
+      "min": 20,
+      "max": 80,
+      "step": 5,
+      "unit": "px",
+      "label": "Header spacing",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "content_spacing",
+      "min": 20,
+      "max": 80,
+      "step": 5,
+      "unit": "px",
+      "label": "Content spacing",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "section_spacing",
+      "min": 15,
+      "max": 60,
+      "step": 5,
+      "unit": "px",
+      "label": "Section spacing",
+      "default": 30
+    },
+    {
+      "type": "range",
+      "id": "border_radius",
+      "min": 0,
+      "max": 20,
+      "step": 2,
+      "unit": "px",
+      "label": "Border radius",
+      "default": 8
+    },
+    {
+      "type": "range",
+      "id": "highlight_padding",
+      "min": 15,
+      "max": 50,
+      "step": 5,
+      "unit": "px",
+      "label": "Highlight box padding",
+      "default": 25
+    },
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "range",
+      "id": "title_size",
+      "min": 24,
+      "max": 60,
+      "step": 2,
+      "unit": "px",
+      "label": "Title size",
+      "default": 42
+    },
+    {
+      "type": "range",
+      "id": "subtitle_size",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "label": "Subtitle size",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "section_title_size",
+      "min": 16,
+      "max": 32,
+      "step": 2,
+      "unit": "px",
+      "label": "Section title size",
+      "default": 22
+    },
+    {
+      "type": "range",
+      "id": "text_size",
+      "min": 12,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "label": "Text size",
+      "default": 15
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "section_bg_color",
+      "label": "Section background",
+      "default": "#f9f9f9"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Headings",
+      "default": "#1a1a1a"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text",
+      "default": "#4a4a4a"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Accent",
+      "default": "#fa7500"
+    },
+    {
+      "type": "color",
+      "id": "highlight_bg_color",
+      "label": "Highlight background",
+      "default": "#fff8f0"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Refund policy"
+    }
+  ]
+}
+{% endschema %}
