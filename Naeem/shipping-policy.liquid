@@ -1,0 +1,704 @@
+{% doc %}
+  @prompt
+    I need a perfect shipping policy template fully editable and looking modern
+{% enddoc %}
+
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-shipping-policy-{{ ai_gen_id }} {
+    max-width: {{ block.settings.max_width }}px;
+    margin: 0 auto;
+    padding: {{ block.settings.section_padding }}px 20px;
+    background-color: {{ block.settings.background_color }};
+    color: {{ block.settings.text_color }};
+    font-family: {{ block.settings.body_font.family }}, {{ block.settings.body_font.fallback_families }};
+    font-weight: {{ block.settings.body_font.weight }};
+    line-height: 1.6;
+  }
+
+  .ai-shipping-policy__header-{{ ai_gen_id }} {
+    text-align: {{ block.settings.title_alignment }};
+    margin-bottom: {{ block.settings.title_spacing }}px;
+    padding-bottom: {{ block.settings.title_spacing | divided_by: 2 }}px;
+    border-bottom: {{ block.settings.divider_thickness }}px solid {{ block.settings.divider_color }};
+  }
+
+  .ai-shipping-policy__title-{{ ai_gen_id }} {
+    font-family: {{ block.settings.heading_font.family }}, {{ block.settings.heading_font.fallback_families }};
+    font-weight: {{ block.settings.heading_font.weight }};
+    font-size: {{ block.settings.title_size }}px;
+    color: {{ block.settings.heading_color }};
+    margin: 0 0 {{ block.settings.title_spacing | divided_by: 3 }}px;
+    line-height: 1.2;
+  }
+
+  .ai-shipping-policy__subtitle-{{ ai_gen_id }} {
+    font-size: {{ block.settings.subtitle_size }}px;
+    color: {{ block.settings.subtitle_color }};
+    margin: 0;
+  }
+
+  .ai-shipping-policy__content-{{ ai_gen_id }} {
+    margin-top: {{ block.settings.content_spacing }}px;
+  }
+
+  .ai-shipping-policy__section-{{ ai_gen_id }} {
+    margin-bottom: {{ block.settings.section_spacing }}px;
+    padding: {{ block.settings.section_padding_inner }}px;
+    background-color: {{ block.settings.section_bg_color }};
+    border-radius: {{ block.settings.border_radius }}px;
+    border: {{ block.settings.section_border_width }}px solid {{ block.settings.section_border_color }};
+  }
+
+  .ai-shipping-policy__section-title-{{ ai_gen_id }} {
+    font-family: {{ block.settings.heading_font.family }}, {{ block.settings.heading_font.fallback_families }};
+    font-weight: {{ block.settings.heading_font.weight }};
+    font-size: {{ block.settings.section_title_size }}px;
+    color: {{ block.settings.heading_color }};
+    margin: 0 0 {{ block.settings.section_title_spacing }}px;
+    line-height: 1.3;
+  }
+
+  .ai-shipping-policy__section-content-{{ ai_gen_id }} {
+    font-size: {{ block.settings.body_text_size }}px;
+    color: {{ block.settings.text_color }};
+  }
+
+  .ai-shipping-policy__section-content-{{ ai_gen_id }} p {
+    margin: 0 0 {{ block.settings.paragraph_spacing }}px;
+  }
+
+  .ai-shipping-policy__section-content-{{ ai_gen_id }} p:last-child {
+    margin-bottom: 0;
+  }
+
+  .ai-shipping-policy__section-content-{{ ai_gen_id }} ul,
+  .ai-shipping-policy__section-content-{{ ai_gen_id }} ol {
+    margin: 0 0 {{ block.settings.paragraph_spacing }}px;
+    padding-left: 20px;
+  }
+
+  .ai-shipping-policy__section-content-{{ ai_gen_id }} li {
+    margin-bottom: {{ block.settings.list_spacing }}px;
+  }
+
+  .ai-shipping-policy__section-content-{{ ai_gen_id }} strong {
+    color: {{ block.settings.heading_color }};
+    font-weight: 600;
+  }
+
+  .ai-shipping-policy__highlight-{{ ai_gen_id }} {
+    background-color: {{ block.settings.highlight_bg_color }};
+    padding: {{ block.settings.highlight_padding }}px;
+    border-left: 4px solid {{ block.settings.highlight_border_color }};
+    border-radius: {{ block.settings.border_radius | divided_by: 2 }}px;
+    margin: {{ block.settings.section_spacing | divided_by: 2 }}px 0;
+  }
+
+  .ai-shipping-policy__highlight-{{ ai_gen_id }} p {
+    margin: 0;
+    font-size: {{ block.settings.body_text_size }}px;
+    color: {{ block.settings.text_color }};
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-shipping-policy-{{ ai_gen_id }} {
+      padding: {{ block.settings.section_padding | times: 0.6 }}px 16px;
+    }
+
+    .ai-shipping-policy__title-{{ ai_gen_id }} {
+      font-size: {{ block.settings.title_size | times: 0.7 }}px;
+    }
+
+    .ai-shipping-policy__subtitle-{{ ai_gen_id }} {
+      font-size: {{ block.settings.subtitle_size | times: 0.85 }}px;
+    }
+
+    .ai-shipping-policy__section-title-{{ ai_gen_id }} {
+      font-size: {{ block.settings.section_title_size | times: 0.8 }}px;
+    }
+
+    .ai-shipping-policy__section-{{ ai_gen_id }} {
+      padding: {{ block.settings.section_padding_inner | times: 0.7 }}px;
+    }
+  }
+{% endstyle %}
+
+<div class="ai-shipping-policy-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  <div class="ai-shipping-policy__header-{{ ai_gen_id }}">
+    {%- if block.settings.main_title != blank -%}
+      <h1 class="ai-shipping-policy__title-{{ ai_gen_id }}">{{ block.settings.main_title }}</h1>
+    {%- endif -%}
+    {%- if block.settings.subtitle != blank -%}
+      <p class="ai-shipping-policy__subtitle-{{ ai_gen_id }}">{{ block.settings.subtitle }}</p>
+    {%- endif -%}
+  </div>
+
+  <div class="ai-shipping-policy__content-{{ ai_gen_id }}">
+    {%- if block.settings.show_processing_time -%}
+      <div class="ai-shipping-policy__section-{{ ai_gen_id }}">
+        <h2 class="ai-shipping-policy__section-title-{{ ai_gen_id }}">{{ block.settings.processing_title }}</h2>
+        <div class="ai-shipping-policy__section-content-{{ ai_gen_id }}">
+          {{ block.settings.processing_content }}
+        </div>
+      </div>
+    {%- endif -%}
+
+    {%- if block.settings.show_shipping_methods -%}
+      <div class="ai-shipping-policy__section-{{ ai_gen_id }}">
+        <h2 class="ai-shipping-policy__section-title-{{ ai_gen_id }}">{{ block.settings.shipping_methods_title }}</h2>
+        <div class="ai-shipping-policy__section-content-{{ ai_gen_id }}">
+          {{ block.settings.shipping_methods_content }}
+        </div>
+      </div>
+    {%- endif -%}
+
+    {%- if block.settings.show_delivery_times -%}
+      <div class="ai-shipping-policy__section-{{ ai_gen_id }}">
+        <h2 class="ai-shipping-policy__section-title-{{ ai_gen_id }}">{{ block.settings.delivery_times_title }}</h2>
+        <div class="ai-shipping-policy__section-content-{{ ai_gen_id }}">
+          {{ block.settings.delivery_times_content }}
+        </div>
+      </div>
+    {%- endif -%}
+
+    {%- if block.settings.show_shipping_costs -%}
+      <div class="ai-shipping-policy__section-{{ ai_gen_id }}">
+        <h2 class="ai-shipping-policy__section-title-{{ ai_gen_id }}">{{ block.settings.shipping_costs_title }}</h2>
+        <div class="ai-shipping-policy__section-content-{{ ai_gen_id }}">
+          {{ block.settings.shipping_costs_content }}
+        </div>
+      </div>
+    {%- endif -%}
+
+    {%- if block.settings.show_international -%}
+      <div class="ai-shipping-policy__section-{{ ai_gen_id }}">
+        <h2 class="ai-shipping-policy__section-title-{{ ai_gen_id }}">{{ block.settings.international_title }}</h2>
+        <div class="ai-shipping-policy__section-content-{{ ai_gen_id }}">
+          {{ block.settings.international_content }}
+        </div>
+      </div>
+    {%- endif -%}
+
+    {%- if block.settings.show_tracking -%}
+      <div class="ai-shipping-policy__section-{{ ai_gen_id }}">
+        <h2 class="ai-shipping-policy__section-title-{{ ai_gen_id }}">{{ block.settings.tracking_title }}</h2>
+        <div class="ai-shipping-policy__section-content-{{ ai_gen_id }}">
+          {{ block.settings.tracking_content }}
+        </div>
+      </div>
+    {%- endif -%}
+
+    {%- if block.settings.show_issues -%}
+      <div class="ai-shipping-policy__section-{{ ai_gen_id }}">
+        <h2 class="ai-shipping-policy__section-title-{{ ai_gen_id }}">{{ block.settings.issues_title }}</h2>
+        <div class="ai-shipping-policy__section-content-{{ ai_gen_id }}">
+          {{ block.settings.issues_content }}
+        </div>
+      </div>
+    {%- endif -%}
+
+    {%- if block.settings.highlight_text != blank -%}
+      <div class="ai-shipping-policy__highlight-{{ ai_gen_id }}">
+        {{ block.settings.highlight_text }}
+      </div>
+    {%- endif -%}
+
+    {%- if block.settings.show_contact -%}
+      <div class="ai-shipping-policy__section-{{ ai_gen_id }}">
+        <h2 class="ai-shipping-policy__section-title-{{ ai_gen_id }}">{{ block.settings.contact_title }}</h2>
+        <div class="ai-shipping-policy__section-content-{{ ai_gen_id }}">
+          {{ block.settings.contact_content }}
+        </div>
+      </div>
+    {%- endif -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Shipping policy",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Main heading"
+    },
+    {
+      "type": "text",
+      "id": "main_title",
+      "label": "Title",
+      "default": "Shipping Policy"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "Last updated: January 2025"
+    },
+    {
+      "type": "select",
+      "id": "title_alignment",
+      "label": "Title alignment",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "header",
+      "content": "Processing time"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_processing_time",
+      "label": "Show processing time section",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "processing_title",
+      "label": "Section title",
+      "default": "Order Processing Time"
+    },
+    {
+      "type": "richtext",
+      "id": "processing_content",
+      "label": "Content",
+      "default": "<p>All orders are processed within 1-2 business days. Orders are not shipped or delivered on weekends or holidays.</p><p>If we are experiencing a high volume of orders, shipments may be delayed by a few days. Please allow additional days in transit for delivery.</p>"
+    },
+    {
+      "type": "header",
+      "content": "Shipping methods"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_shipping_methods",
+      "label": "Show shipping methods section",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "shipping_methods_title",
+      "label": "Section title",
+      "default": "Shipping Methods"
+    },
+    {
+      "type": "richtext",
+      "id": "shipping_methods_content",
+      "label": "Content",
+      "default": "<p>We offer the following shipping options:</p><ul><li><strong>Standard Shipping:</strong> 5-7 business days</li><li><strong>Express Shipping:</strong> 2-3 business days</li><li><strong>Overnight Shipping:</strong> 1 business day</li></ul>"
+    },
+    {
+      "type": "header",
+      "content": "Delivery times"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_delivery_times",
+      "label": "Show delivery times section",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "delivery_times_title",
+      "label": "Section title",
+      "default": "Estimated Delivery Times"
+    },
+    {
+      "type": "richtext",
+      "id": "delivery_times_content",
+      "label": "Content",
+      "default": "<p>Delivery times are estimates and commence from the date of shipping, rather than the date of order. Delivery times are to be used as a guide only and are subject to the acceptance and approval of your order.</p><p>Please note that delivery times can be affected by stock availability and potential delays by shipping companies.</p>"
+    },
+    {
+      "type": "header",
+      "content": "Shipping costs"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_shipping_costs",
+      "label": "Show shipping costs section",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "shipping_costs_title",
+      "label": "Section title",
+      "default": "Shipping Costs"
+    },
+    {
+      "type": "richtext",
+      "id": "shipping_costs_content",
+      "label": "Content",
+      "default": "<p>Shipping charges for your order will be calculated and displayed at checkout.</p><p><strong>Free Shipping:</strong> We offer free standard shipping on all orders over $50 within the continental United States.</p>"
+    },
+    {
+      "type": "header",
+      "content": "International shipping"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_international",
+      "label": "Show international shipping section",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "international_title",
+      "label": "Section title",
+      "default": "International Shipping"
+    },
+    {
+      "type": "richtext",
+      "id": "international_content",
+      "label": "Content",
+      "default": "<p>We currently ship to select international destinations. International shipping times vary by location and typically range from 7-21 business days.</p><p><strong>Customs and Import Duties:</strong> International customers are responsible for any customs fees, import duties, or taxes imposed by their country. These charges are not included in our shipping costs.</p>"
+    },
+    {
+      "type": "header",
+      "content": "Order tracking"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_tracking",
+      "label": "Show tracking section",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "tracking_title",
+      "label": "Section title",
+      "default": "Order Tracking"
+    },
+    {
+      "type": "richtext",
+      "id": "tracking_content",
+      "label": "Content",
+      "default": "<p>Once your order has shipped, you will receive an email confirmation with a tracking number. You can track your package using this number on the carrier's website.</p><p>Please allow 24-48 hours for tracking information to become available.</p>"
+    },
+    {
+      "type": "header",
+      "content": "Shipping issues"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_issues",
+      "label": "Show shipping issues section",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "issues_title",
+      "label": "Section title",
+      "default": "Lost or Damaged Packages"
+    },
+    {
+      "type": "richtext",
+      "id": "issues_content",
+      "label": "Content",
+      "default": "<p>If your package is lost in transit or arrives damaged, please contact us immediately. We will work with the shipping carrier to resolve the issue and ensure you receive your order.</p><p>For damaged items, please provide photos of the packaging and product to help us process your claim quickly.</p>"
+    },
+    {
+      "type": "header",
+      "content": "Contact information"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_contact",
+      "label": "Show contact section",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "contact_title",
+      "label": "Section title",
+      "default": "Questions About Shipping?"
+    },
+    {
+      "type": "richtext",
+      "id": "contact_content",
+      "label": "Content",
+      "default": "<p>If you have any questions about our shipping policy or your specific order, please don't hesitate to contact our customer service team.</p><p>Email: support@yourstore.com<br>Phone: 1-800-123-4567<br>Hours: Monday - Friday, 9am - 5pm EST</p>"
+    },
+    {
+      "type": "header",
+      "content": "Highlight box"
+    },
+    {
+      "type": "richtext",
+      "id": "highlight_text",
+      "label": "Highlighted message",
+      "default": "<p><strong>Important:</strong> Please ensure your shipping address is correct before completing your order. We cannot be held responsible for orders shipped to incorrect addresses provided by the customer.</p>"
+    },
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "font_picker",
+      "id": "heading_font",
+      "label": "Heading font",
+      "default": "assistant_n4"
+    },
+    {
+      "type": "font_picker",
+      "id": "body_font",
+      "label": "Body font",
+      "default": "assistant_n4"
+    },
+    {
+      "type": "range",
+      "id": "title_size",
+      "min": 24,
+      "max": 72,
+      "step": 2,
+      "unit": "px",
+      "label": "Main title size",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "subtitle_size",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "label": "Subtitle size",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "section_title_size",
+      "min": 18,
+      "max": 48,
+      "step": 2,
+      "unit": "px",
+      "label": "Section title size",
+      "default": 28
+    },
+    {
+      "type": "range",
+      "id": "body_text_size",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "label": "Body text size",
+      "default": 16
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Body text",
+      "default": "#333333"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Headings",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "subtitle_color",
+      "label": "Subtitle",
+      "default": "#666666"
+    },
+    {
+      "type": "color",
+      "id": "section_bg_color",
+      "label": "Section background",
+      "default": "#f9f9f9"
+    },
+    {
+      "type": "color",
+      "id": "section_border_color",
+      "label": "Section border",
+      "default": "#e5e5e5"
+    },
+    {
+      "type": "color",
+      "id": "divider_color",
+      "label": "Divider",
+      "default": "#e0e0e0"
+    },
+    {
+      "type": "color",
+      "id": "highlight_bg_color",
+      "label": "Highlight background",
+      "default": "#fff8e1"
+    },
+    {
+      "type": "color",
+      "id": "highlight_border_color",
+      "label": "Highlight border",
+      "default": "#ffc107"
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "max_width",
+      "min": 600,
+      "max": 1400,
+      "step": 50,
+      "unit": "px",
+      "label": "Maximum width",
+      "default": 1000
+    },
+    {
+      "type": "range",
+      "id": "section_padding",
+      "min": 20,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "label": "Section padding",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "section_padding_inner",
+      "min": 10,
+      "max": 60,
+      "step": 5,
+      "unit": "px",
+      "label": "Section inner padding",
+      "default": 30
+    },
+    {
+      "type": "range",
+      "id": "title_spacing",
+      "min": 10,
+      "max": 60,
+      "step": 5,
+      "unit": "px",
+      "label": "Title spacing",
+      "default": 30
+    },
+    {
+      "type": "range",
+      "id": "content_spacing",
+      "min": 20,
+      "max": 80,
+      "step": 5,
+      "unit": "px",
+      "label": "Content top spacing",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "section_spacing",
+      "min": 15,
+      "max": 60,
+      "step": 5,
+      "unit": "px",
+      "label": "Section spacing",
+      "default": 30
+    },
+    {
+      "type": "range",
+      "id": "section_title_spacing",
+      "min": 10,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "label": "Section title spacing",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "paragraph_spacing",
+      "min": 8,
+      "max": 32,
+      "step": 2,
+      "unit": "px",
+      "label": "Paragraph spacing",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "list_spacing",
+      "min": 4,
+      "max": 20,
+      "step": 2,
+      "unit": "px",
+      "label": "List item spacing",
+      "default": 8
+    },
+    {
+      "type": "range",
+      "id": "highlight_padding",
+      "min": 10,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "label": "Highlight padding",
+      "default": 20
+    },
+    {
+      "type": "header",
+      "content": "Style"
+    },
+    {
+      "type": "range",
+      "id": "border_radius",
+      "min": 0,
+      "max": 24,
+      "step": 2,
+      "unit": "px",
+      "label": "Border radius",
+      "default": 8
+    },
+    {
+      "type": "range",
+      "id": "section_border_width",
+      "min": 0,
+      "max": 4,
+      "step": 1,
+      "unit": "px",
+      "label": "Section border width",
+      "default": 1
+    },
+    {
+      "type": "range",
+      "id": "divider_thickness",
+      "min": 1,
+      "max": 5,
+      "step": 1,
+      "unit": "px",
+      "label": "Divider thickness",
+      "default": 2
+    }
+  ],
+  "presets": [
+    {
+      "name": "Shipping policy"
+    }
+  ]
+}
+{% endschema %}
