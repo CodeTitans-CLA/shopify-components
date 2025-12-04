@@ -1,0 +1,442 @@
+{% comment %}
+  Make a file in snippets which name will be image-element.liquid And paste the code with img tag.
+{% endcomment %}
+
+{%- assign img = img | default: image -%}
+
+<img
+  src="{{ img | img_url: sizes }}"
+  alt="{{ alt | default: img.alt }}"
+  {% if class != blank %}class="{{ class }}"{% endif %}
+  loading="lazy"
+>
+
+
+
+{% comment %}
+  Enhanced Collection List section with extensive settings.
+{% endcomment %}
+
+{%- liquid
+  assign columns = section.settings.columns
+  assign aspect_ratio = section.settings.image_aspect_ratio
+  assign overlay_color = section.settings.overlay_color
+  assign overlay_opacity = section.settings.overlay_opacity | times: 0.01
+  assign text_color = section.settings.text_color
+  assign use_card_view = section.settings.view_style | card
+  assign content_placement = section.settings.content_placement
+-%}
+
+<div 
+  class="collection-list-section" 
+  data-section-id="{{ section.id }}" 
+  data-section-type="collection-list"
+  style="
+    --section-max-width: {{ section.settings.max_width }}px;
+    --section-padding-top: {{ section.settings.padding_top }}px;
+    --section-padding-bottom: {{ section.settings.padding_bottom }}px;
+  "
+>
+  <div class="page-width page-width--{{ section.settings.width }}" style="max-width: var(--section-max-width);">
+    
+    {%- if section.settings.title != blank -%}
+      <h2 class="section-header__title center">{{ section.settings.title | escape }}</h2>
+    {%- endif -%}
+
+    <div 
+      class="collection-list-grid collection-list-grid--{{ columns }}-items collection-list-grid--{{ section.settings.view_style }}"
+      data-grid-style="{{ section.settings.view_style }}"
+    >
+      {%- for block in section.blocks -%}
+        {%- assign collection = block.settings.collection -%}
+        
+        <div class="collection-list-item {% if use_card_view %}collection-list-item--card{% endif %}" {{ block.shopify_attributes }}>
+          
+          {%- comment -%} Determine the link URL {%- endcomment -%}
+          {%- assign item_url = collection.url | default: '#' -%}
+
+          <a href="{{ item_url }}" class="collection-list-item__link collection-list-item__link--{{ content_placement }}">
+
+            {%- comment -%} 1. IMAGE & OVERLAY {%- endcomment -%}
+            <div 
+              class="collection-list-item__media"
+              style="
+                {% if aspect_ratio != 'natural' %}padding-top: 100%;{% endif %}
+                {% if block.settings.hover_effect == 'zoom' %}overflow: hidden;{% endif %}
+              "
+              data-aspect-ratio="{{ aspect_ratio }}"
+            >
+              {%- assign image_to_display = block.settings.image | default: collection.image | default: collection.featured_image -%}
+              
+              {%- if image_to_display != blank -%}
+                <div class="collection-list-item__image-wrapper" style="position: relative;">
+                  {% render 'image-element', 
+                    img: image_to_display, 
+                    alt: block.settings.title | escape,
+                    sizes: '400x400',
+                    class: 'collection-list-item__image collection-list-item__image--' | append: block.settings.hover_effect
+                  %}
+                </div>
+              {%- else -%}
+                {% comment %} Placeholder {%- endcomment -%}
+                <div class="collection-list-item__image-placeholder" style="background-color: #f4f4f4;">
+                  <div class="placeholder-content">
+                    <p>Image Placeholder</p>
+                  </div>
+                </div>
+              {%- endif -%}
+              
+              {%- comment -%} IMAGE OVERLAY (if color or opacity is set) {%- endcomment -%}
+              {%- if overlay_opacity > 0 -%}
+                <div 
+                  class="collection-list-item__overlay"
+                  style="background-color: {{ overlay_color }}; opacity: {{ overlay_opacity }};"
+                ></div>
+              {%- endif -%}
+              
+            </div>
+
+            {%- comment -%} 2. TEXT/INFO BOX {%- endcomment -%}
+            <div 
+              class="collection-list-item__info" 
+              style="color: {{ text_color }};"
+            >
+              {%- assign item_title = block.settings.title | default: collection.title | default: 'Collection Title' -%}
+              <h3 class="collection-list-item__title">
+                {{ item_title }}
+              </h3>
+            </div>
+
+          </a>
+        </div>
+      {%- endfor -%}
+    </div>
+
+    {%- if section.blocks.size == 0 -%}
+      <div class="placeholder-content">
+        <p>Use the section settings to add collection blocks.</p>
+      </div>
+    {%- endif -%}
+
+  </div>
+</div>
+
+<style>
+  /* ================================================================================
+    CSS/STYLING PLACEHOLDERS - You MUST add the actual CSS here or in your theme's stylesheet
+    ================================================================================
+  */
+  .collection-list-section {
+    padding-top: var(--section-padding-top);
+    padding-bottom: var(--section-padding-bottom);
+  }
+
+  /* Grid Layout */
+  .collection-list-grid {
+    display: grid;
+    gap: {{ section.settings.grid_gap }}px; /* Uses the new grid_gap setting */
+  }
+  
+  /* Set columns based on setting */
+  .collection-list-grid--3-items {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .collection-list-grid--4-items {
+    grid-template-columns: repeat(4, 1fr);
+  }
+  /* ... add more column definitions */
+
+
+  /* Card View Styles */
+  .collection-list-grid--card .collection-list-item--card {
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    text-align: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+  }
+  .collection-list-grid--card .collection-list-item__media {
+    /* For card view, image is usually contained, not always full-bleed */
+    border-radius: 4px 4px 0 0;
+  }
+  .collection-list-grid--card .collection-list-item__info {
+    padding: 15px;
+  }
+
+
+  /* Content Placement: Keep name over the image */
+  .collection-list-item__link--over_image .collection-list-item__info {
+    position: absolute; /* Place over the image */
+    top: 50%;
+    left: 0;
+    right: 0;
+    transform: translateY(-50%);
+    z-index: 2; /* Must be above the image and overlay */
+    padding: 10px;
+    text-align: center;
+    /* Optional: Ensure text is visible over dark image/overlay */
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+  }
+  
+  /* Content Placement: Below the image (Default/Grid) */
+  .collection-list-item__link--below_image .collection-list-item__info {
+    padding: 15px 0;
+    text-align: center;
+  }
+  
+  /* Image Aspect Ratio */
+  .collection-list-item__media[data-aspect-ratio="square"] .collection-list-item__image-wrapper {
+    padding-top: 100%; /* 1:1 ratio */
+  }
+  /* ... add definitions for 'portrait', 'landscape' if needed */
+  .collection-list-item__image-wrapper {
+    position: relative;
+    height: 0; /* Required for the padding-top trick */
+  }
+  .collection-list-item__image {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s ease-out; /* Base transition for hover effects */
+  }
+
+  /* Hover Effects: Zoom */
+  .collection-list-item:hover .collection-list-item__image--zoom {
+    transform: scale(1.05);
+  }
+  
+  /* Hover Effects: Grayscale (Example) */
+  .collection-list-item__image--grayscale {
+    filter: grayscale(0%);
+    transition: filter 0.4s ease-out;
+  }
+  .collection-list-item:hover .collection-list-item__image--grayscale {
+    filter: grayscale(100%);
+  }
+
+  /* Overlay Style */
+  .collection-list-item__overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1; /* Above image, below text */
+    transition: opacity 0.3s ease-in-out;
+  }
+  .collection-list-item:hover .collection-list-item__overlay {
+    /* Optional: Change overlay on hover */
+    opacity: 0.1 !important; 
+  }
+
+</style>
+
+
+{%- comment -%}
+  ================================================================================
+  SECTION SETTINGS (SCHEMA)
+  ================================================================================
+{%- endcomment -%}
+
+{% schema %}
+{
+  "name": "Featured Collections",
+  "tag": "section",
+  "class": "section-collection-list",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Section Layout & Structure"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "default": "Featured Collections",
+      "label": "Heading"
+    },
+    {
+      "type": "select",
+      "id": "width",
+      "label": "Section Width",
+      "default": "default",
+      "options": [
+        { "value": "default", "label": "Default (1200px)" },
+        { "value": "narrow", "label": "Narrow (800px)" },
+        { "value": "full", "label": "Full Width" }
+      ],
+      "info": "Sets the maximum width of content within the section."
+    },
+    {
+      "type": "range",
+      "id": "max_width",
+      "min": 800,
+      "max": 1600,
+      "step": 50,
+      "unit": "px",
+      "label": "Custom Max Content Width",
+      "default": 1200
+    },
+    {
+      "type": "select",
+      "id": "columns",
+      "label": "Collections per row",
+      "default": "3",
+      "options": [
+        { "value": "2", "label": "2" },
+        { "value": "3", "label": "3" },
+        { "value": "4", "label": "4" }
+      ]
+    },
+    {
+      "type": "range",
+      "id": "grid_gap",
+      "min": 10,
+      "max": 50,
+      "step": 5,
+      "unit": "px",
+      "label": "Space between items (Gap)",
+      "default": 20
+    },
+    {
+      "type": "select",
+      "id": "view_style",
+      "label": "View Style",
+      "default": "grid",
+      "options": [
+        { "value": "grid", "label": "Simple Grid" },
+        { "value": "card", "label": "Card View (Boxed)" }
+      ]
+    },
+    
+    {
+      "type": "header",
+      "content": "Image & Content Settings"
+    },
+    {
+      "type": "select",
+      "id": "image_aspect_ratio",
+      "label": "Image Aspect Ratio",
+      "default": "square",
+      "options": [
+        { "value": "natural", "label": "Natural (original)" },
+        { "value": "square", "label": "Square (1:1)" },
+        { "value": "portrait", "label": "Portrait (3:4)" },
+        { "value": "landscape", "label": "Landscape (16:9)" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "content_placement",
+      "label": "Collection Name Placement",
+      "default": "below_image",
+      "options": [
+        { "value": "below_image", "label": "Below the image" },
+        { "value": "over_image", "label": "Over the image (requires overlay)" }
+      ]
+    },
+    
+    {
+      "type": "header",
+      "content": "Overlay & Color"
+    },
+    {
+      "type": "color",
+      "id": "overlay_color",
+      "label": "Image Overlay Color",
+      "default": "#000000"
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "label": "Overlay Opacity",
+      "default": 20,
+      "info": "Set to 0% to disable the overlay."
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text Color",
+      "default": "#000000",
+      "info": "Use white (#FFFFFF) if text is placed over the image."
+    },
+    
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Top padding",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Bottom padding",
+      "default": 36
+    }
+  ],
+  "blocks": [
+    {
+      "type": "collection",
+      "name": "Collection Item",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Custom Title",
+          "info": "Overrides the selected collection's title."
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Custom Image",
+          "info": "Upload a custom image. This overrides the collection's default image."
+        },
+        {
+          "type": "collection",
+          "id": "collection",
+          "label": "Collection Link"
+        },
+        {
+          "type": "select",
+          "id": "hover_effect",
+          "label": "Image Hover Effect",
+          "default": "none",
+          "options": [
+            { "value": "none", "label": "None" },
+            { "value": "zoom", "label": "Zoom In" },
+            { "value": "grayscale", "label": "Grayscale" }
+          ],
+          "info": "Requires corresponding CSS to be defined in the theme."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Featured Collections (Enhanced)",
+      "category": "Collection",
+      "blocks": [
+        { "type": "collection" },
+        { "type": "collection" },
+        { "type": "collection" }
+      ]
+    }
+  ]
+}
+{% endschema %}
