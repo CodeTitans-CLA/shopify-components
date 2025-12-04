@@ -31,9 +31,18 @@ For Liquid Code of the Text Filled with Image section, please visit the followin
 
 ## 4. Collection List With Image
 
-![Text Filled with Image](images/Collection-List-W-Img.png)
+![Collection List With Image](images/Collection-List-W-Img.png)
 
 For Liquid Code of the Collection List With Image section, please visit the following section:  
 [See This Section](custom-collection-list.liquid)
+
+---
+
+## 5. Feature Product Grid
+
+![Feature Product Grid](images/Feature-Product-Grid.png)
+
+For Liquid Code of the Feature Product Grid section, please visit the following section:  
+[See This Section](feature-product-grid.liquid)
 
 
