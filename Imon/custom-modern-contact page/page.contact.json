@@ -14,12 +14,25 @@
       "blocks": {
         "banner_4QUpay": {
           "type": "banner",
+          "disabled": true,
           "settings": {
-            "top_banner_image": "shopify://shop_images/cta-bg.webp",
             "top_banner_heading": "Contact Us",
             "banner_heading_size": 48,
             "banner_heading_weight": "700",
             "banner_heading_color": "#ffffff"
+          }
+        },
+        "cta_banner_VEzwc4": {
+          "type": "cta_banner",
+          "settings": {
+            "cta_image": "shopify://shop_images/mid_banner.jpg",
+            "cta_heading": "Let's Build Future Together.",
+            "cta_button_text": "",
+            "cta_button_link": "",
+            "vertical_alignment": "center",
+            "cta_heading_size": 36,
+            "cta_heading_weight": "700",
+            "cta_text_color": "#ffffff"
           }
         },
         "header_XRkQbg": {
@@ -37,7 +50,7 @@
         "info_card_4PJrwa": {
           "type": "info-card",
           "settings": {
-            "icon_image": "shopify://shop_images/favicon-32x32_1.png",
+            "icon_image": "shopify://shop_images/location_cb71c4d2-f65a-4a54-a5e3-fcd4ec046ccd.png",
             "title": "Our Location",
             "content": "993 Terrier Burg, West Pond, MT 94201-050",
             "card_link": "",
@@ -48,10 +61,11 @@
         },
         "info_card_KJjLnn": {
           "type": "info-card",
+          "name": "Email US",
           "settings": {
-            "icon_image": "shopify://shop_images/favicon-32x32_1.png",
-            "title": "Our Location",
-            "content": "993 Terrier Burg, West Pond, MT 94201-050",
+            "icon_image": "shopify://shop_images/mail_logo_42249f40-8534-43dd-bd4f-f133b1a9043e.png",
+            "title": "Email US",
+            "content": "info.@printstudio.com",
             "card_link": "",
             "card_text_align": "center",
             "card_title_size": 16,
@@ -60,10 +74,11 @@
         },
         "info_card_ViiJKV": {
           "type": "info-card",
+          "name": "Call us",
           "settings": {
-            "icon_image": "shopify://shop_images/favicon-32x32_1.png",
-            "title": "Our Location",
-            "content": "993 Terrier Burg, West Pond, MT 94201-050",
+            "icon_image": "shopify://shop_images/call_logo_45c01200-31a9-41f8-b5c8-a9b30954846b.png",
+            "title": "Call US",
+            "content": "+1 (202) 555-0134\n+1 (305) 555-0247",
             "card_link": "",
             "card_text_align": "center",
             "card_title_size": 16,
@@ -72,10 +87,11 @@
         },
         "info_card_pNEXAx": {
           "type": "info-card",
+          "name": "live chat",
           "settings": {
-            "icon_image": "shopify://shop_images/favicon-32x32_1.png",
-            "title": "Our Location",
-            "content": "993 Terrier Burg, West Pond, MT 94201-050",
+            "icon_image": "shopify://shop_images/live_chat_logo_5a1246c2-9dd6-4fb4-9aa4-c6c504645f3e.png",
+            "title": "Live Chat",
+            "content": "livechat@printstudio.com",
             "card_link": "",
             "card_text_align": "center",
             "card_title_size": 16,
@@ -91,39 +107,26 @@
             "form_title_size": 24,
             "form_title_weight": "700"
           }
-        },
-        "cta_banner_VEzwc4": {
-          "type": "cta_banner",
-          "settings": {
-            "cta_image": "shopify://shop_images/download_1.png",
-            "cta_heading": "Let's Build Future Together.",
-            "cta_button_text": "Get Started Now",
-            "cta_button_link": "shopify://policies/privacy-policy",
-            "vertical_alignment": "center",
-            "cta_heading_size": 36,
-            "cta_heading_weight": "700",
-            "cta_text_color": "#ffffff"
-          }
         }
       },
       "block_order": [
         "banner_4QUpay",
+        "cta_banner_VEzwc4",
         "header_XRkQbg",
         "info_card_4PJrwa",
         "info_card_KJjLnn",
         "info_card_ViiJKV",
         "info_card_pNEXAx",
-        "form_map_qCiyfx",
-        "cta_banner_VEzwc4"
+        "form_map_qCiyfx"
       ],
       "settings": {
         "padding_top": 80,
         "padding_bottom": 80,
-        "background_color": "#d4e1ed",
-        "accent_color": "#008080",
+        "background_color": "#f9f9f9",
+        "accent_color": "#fa0977",
         "text_color": "#000000",
         "card_background": "#ffffff",
-        "font_family": "'Roboto', sans-serif",
+        "font_family": "'Times New Roman', serif",
         "line_height": 1.6,
         "letter_spacing": 0,
         "card_radius": 12,
