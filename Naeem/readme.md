@@ -6,7 +6,7 @@ This document provides information on three key sections of the website:
 
 ![Shipping Policy](images/Shipping-Policy.png)
 
-For more details on the Shipping Policy, please visit the following section:  
+For Liquid Code of the Shipping Policy, please visit the following section:  
 [See This Section](shipping-policy.liquid)
 
 ---
@@ -15,7 +15,7 @@ For more details on the Shipping Policy, please visit the following section:
 
 ![Refund Policy](images/Refund-Policy.png)
 
-For more details on the Refund Policy, please visit the following section:  
+For Liquid Code of the Refund Policy, please visit the following section:  
 [See This Section](refund-policy.liquid)
 
 ---
@@ -24,5 +24,16 @@ For more details on the Refund Policy, please visit the following section:
 
 ![Text Filled with Image](images/Text-Filled-With-Image.png)
 
-For more details on the Text Filled with Image section, please visit the following section:  
+For Liquid Code of the Text Filled with Image section, please visit the following section:  
 [See This Section](text-filled-image.liquid)
+
+---
+
+## 4. Collection List With Image
+
+![Text Filled with Image](images/Collection-List-W-Img.png)
+
+For Liquid Code of the Collection List With Image section, please visit the following section:  
+[See This Section](custom-collection-list.liquid)
+
+
