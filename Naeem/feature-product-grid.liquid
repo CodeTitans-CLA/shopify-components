@@ -3,14 +3,31 @@ Shopify Section: Customizable Product Feature Section
 
 This section uses a responsive two-column layout (image and features)
 and includes a schema for easy editing within the Shopify Theme Editor.
-It uses standard CSS for styling and responsiveness.
 
-
+Fixes applied:
+1. Updated range settings (min, step, and default) to avoid decimal precision errors.
+2. Implemented all custom color, typography, image ratio, and spacing settings.
 {% endcomment %}
+
+{% comment %} Get all settings variables for use in CSS {% endcomment %}
+{% assign primary_color = section.settings.primary_color %}
+{% assign secondary_color = section.settings.secondary_color %}
+{% assign headline_color = section.settings.headline_color %}
+{% assign text_color = section.settings.text_color %}
+{% assign bg_color = section.settings.bg_color %}
+
+{% assign callout_text_size = section.settings.callout_text_size | append: 'rem' %}
+{% assign headline_size_mobile = section.settings.headline_size_mobile | append: 'rem' %}
+{% assign headline_size_desktop = section.settings.headline_size_desktop | append: 'rem' %}
+{% assign feature_title_size_mobile = section.settings.feature_title_size_mobile | append: 'rem' %}
+{% assign feature_title_size_desktop = section.settings.feature_title_size_desktop | append: 'rem' %}
+{% assign feature_description_size = section.settings.feature_description_size | append: 'rem' %}
+
+{% assign product_image_ratio = 100 | divided_by: section.settings.product_image_ratio_w | times: section.settings.product_image_ratio_h | append: '%' %}
 
 <style>
 /* --------------------------------------
-1. Global Styles and Layout (No Tailwind)
+1. Global Styles and Layout
 -------------------------------------- */
 
 /* Responsive breakpoints */
@@ -21,13 +38,13 @@ It uses standard CSS for styling and responsiveness.
     max-width: 1280px; /* Equivalent to max-w-7xl */
     margin-left: auto;
     margin-right: auto;
-    background-color: #ffffff;
+    background-color: {{ bg_color }}; /* CUSTOMIZABLE */
     box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); /* Equivalent to shadow-2xl */
     border-radius: 0.75rem; /* Equivalent to rounded-xl */
     padding: 1.5rem; /* Equivalent to p-6 */
     border: 1px solid #f3f4f6; /* Equivalent to border-gray-100 */
-    margin-top: 4rem; /* Equivalent to my-16 */
-    margin-bottom: 4rem;
+    margin-top: {{ section.settings.section_spacing_y }}px; /* CUSTOMIZABLE */
+    margin-bottom: {{ section.settings.section_spacing_y }}px; /* CUSTOMIZABLE */
 }
 
 /* Responsive Grid Container */
@@ -48,7 +65,7 @@ It uses standard CSS for styling and responsiveness.
     }
 }
 
-/* Column Ordering */
+/* Column Ordering - Logic is unchanged */
 .product-image-col {
     order: 2;
     display: flex;
@@ -67,15 +84,16 @@ It uses standard CSS for styling and responsiveness.
 }
 
 /* --------------------------------------
-   2. Product Image Styles
-   -------------------------------------- */
+    2. Product Image Styles (Aspect Ratio Control)
+    -------------------------------------- */
 .product-image-col .image-wrapper {
     width: 100%;
     max-width: 32rem; /* Equivalent to max-w-sm */
 }
 .product-image-container-{{ section.id }} {
     position: relative;
-    padding-top: 125%; /* 4:5 Aspect Ratio for a tall product tub */
+    /* CUSTOMIZABLE: padding-top determines the aspect ratio */
+    padding-top: {{ product_image_ratio }};
 }
 .product-image-container-{{ section.id }} img {
     position: absolute;
@@ -89,37 +107,38 @@ It uses standard CSS for styling and responsiveness.
     transition: all 0.3s ease; /* transition duration-300 */
 }
 .product-image-container-{{ section.id }} img:hover {
-    box-shadow: 0 25px 50px -12px rgba(79, 70, 229, 0.5); /* hover:shadow-indigo-600/50 */
+    /* CUSTOMIZABLE: uses primary color for hover shadow */
+    box-shadow: 0 25px 50px -12px {{ primary_color | color_modify: 'alpha', 0.5 }}; 
 }
 
 
 /* --------------------------------------
-   3. Text and Headline Styles
-   -------------------------------------- */
+    3. Text and Headline Styles (Typography and Color Control)
+    -------------------------------------- */
 .callout-text {
-    font-size: 0.75rem; /* text-xs */
+    font-size: {{ callout_text_size }}; /* CUSTOMIZABLE */
     font-weight: 600; /* font-semibold */
     text-transform: uppercase;
     letter-spacing: 0.1em; /* tracking-widest */
-    color: #10b981; /* text-emerald-500 */
+    color: {{ primary_color }}; /* CUSTOMIZABLE */
     margin-bottom: 0.5rem; /* mb-2 */
 }
 
 .headline {
-    font-size: 1.875rem; /* text-3xl */
+    font-size: {{ headline_size_mobile }}; /* CUSTOMIZABLE */
     font-weight: 800; /* font-extrabold */
-    color: #1f2937; /* text-gray-800 */
+    color: {{ headline_color }}; /* CUSTOMIZABLE */
     margin-bottom: 2rem; /* mb-8 */
 }
 @media (min-width: 640px) {
     .headline {
-        font-size: 2.25rem; /* sm:text-4xl */
+        font-size: {{ headline_size_desktop }}; /* CUSTOMIZABLE */
     }
 }
 
 /* --------------------------------------
-   4. Features Grid and Items
-   -------------------------------------- */
+    4. Features Grid and Items
+    -------------------------------------- */
 .features-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -138,7 +157,7 @@ It uses standard CSS for styling and responsiveness.
     position: relative;
     width: 4rem; /* w-16 */
     height: 4rem; /* h-16 */
-    background-color: #f3f4f6; /* bg-gray-100 */
+    background-color: #f3f4f6; 
     border-radius: 0.5rem; /* rounded-lg */
     box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.06); /* shadow-inner */
     overflow: hidden;
@@ -170,29 +189,29 @@ It uses standard CSS for styling and responsiveness.
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: rgba(79, 70, 229, 0.9); /* bg-indigo-600/90 */
-    color: #ffffff;
+    background-color: {{ secondary_color }}; /* CUSTOMIZABLE */
+    color: #ffffff; /* text-white */
     font-weight: 700; /* font-bold */
     font-size: 1.125rem; /* text-lg */
 }
 
 /* Feature Title and Description */
 .feature-title {
-    font-size: 1rem; /* text-base */
+    font-size: {{ feature_title_size_mobile }}; /* CUSTOMIZABLE */
     font-weight: 700; /* font-bold */
-    color: #1f2937; /* text-gray-800 */
+    color: {{ headline_color }}; /* CUSTOMIZABLE */
     line-height: 1.25; /* leading-tight */
     margin-top: 0.5rem; /* mt-2 */
 }
 @media (min-width: 640px) {
     .feature-title {
-        font-size: 1.125rem; /* sm:text-lg */
+        font-size: {{ feature_title_size_desktop }}; /* CUSTOMIZABLE */
     }
 }
 
 .feature-description {
-    font-size: 0.875rem; /* text-sm */
-    color: #4b5563; /* text-gray-600 */
+    font-size: {{ feature_description_size }}; /* CUSTOMIZABLE */
+    color: {{ text_color }}; /* CUSTOMIZABLE */
 }
 
 
@@ -200,10 +219,8 @@ It uses standard CSS for styling and responsiveness.
 
 <div class="product-features-wrapper">
 
-<!-- Responsive Grid Layout -->
 <div class="features-grid-container">
 
-    <!-- Left Column: Product Image -->
     <div class="product-image-col">
         <div class="image-wrapper">
             <div class="product-image-container-{{ section.id }}">
@@ -223,25 +240,21 @@ It uses standard CSS for styling and responsiveness.
         </div>
     </div>
 
-    <!-- Right Column: Features and Hexagonal Icons -->
     <div class="feature-content-col">
         
-        <!-- Headline/Callout Area -->
         <p class="callout-text">
-            {{ section.settings.callout_text | default: 'INCREASED ENERGY WITH SUXNIX' }}
+            {{ section.settings.callout_text | escape }}
         </p>
         <h2 class="headline">
-            {{ section.settings.headline_text | default: 'SUXNIX INGREDIENTS' }}
+            {{ section.settings.headline_text | escape }}
         </h2>
 
-        <!-- Features Grid (2x2) -->
         <div class="features-grid">
             
             {% for block in section.blocks %}
                 {% case block.type %}
                     {% when 'feature' %}
                     <div class="feature-item" {{ block.shopify_attributes }}>
-                        <!-- Icon Placeholder (Hexagon) -->
                         <div class="feature-icon-container hex-clip-{{ section.id }}">
                             {% if block.settings.icon_image != blank %}
                                 <img 
@@ -257,10 +270,10 @@ It uses standard CSS for styling and responsiveness.
                             {% endif %}
                         </div>
                         <h4 class="feature-title">
-                            {{ block.settings.title }}
+                            {{ block.settings.title | escape }}
                         </h4>
                         <p class="feature-description">
-                            {{ block.settings.description }}
+                            {{ block.settings.description | escape }}
                         </p>
                     </div>
                 {% endcase %}
@@ -281,28 +294,167 @@ It uses standard CSS for styling and responsiveness.
 "class": "section-product-features",
 "max_blocks": 4,
 "settings": [
-{
-"type": "header",
-"content": "Section Content"
-},
-{
-"type": "text",
-"id": "callout_text",
-"label": "Callout Text (Above Headline)",
-"default": "INCREASED ENERGY WITH SUXNIX"
-},
-{
-"type": "text",
-"id": "headline_text",
-"label": "Main Headline",
-"default": "SUXNIX INGREDIENTS"
-},
-{
-"type": "image_picker",
-"id": "product_image",
-"label": "Product Display Image",
-"info": "Best aspect ratio is tall (e.g., 4:5)."
-}
+    {
+        "type": "header",
+        "content": "Section Content"
+    },
+    {
+        "type": "text",
+        "id": "callout_text",
+        "label": "Callout Text (Above Headline)",
+        "default": "INCREASED ENERGY WITH SUXNIX"
+    },
+    {
+        "type": "text",
+        "id": "headline_text",
+        "label": "Main Headline",
+        "default": "SUXNIX INGREDIENTS"
+    },
+    {
+        "type": "image_picker",
+        "id": "product_image",
+        "label": "Product Display Image",
+        "info": "Best aspect ratio is tall (e.g., 4:5)."
+    },
+    
+    {
+        "type": "header",
+        "content": "🎨 Color and Style Settings"
+    },
+    {
+        "type": "color",
+        "id": "bg_color",
+        "label": "Background Color",
+        "default": "#ffffff"
+    },
+    {
+        "type": "color",
+        "id": "primary_color",
+        "label": "Primary Accent Color (Callout Text, Hover)",
+        "default": "#10b981"
+    },
+    {
+        "type": "color",
+        "id": "secondary_color",
+        "label": "Secondary Accent Color (Icon Placeholder)",
+        "default": "#4f46e5"
+    },
+    {
+        "type": "color",
+        "id": "headline_color",
+        "label": "Headline/Title Color",
+        "default": "#1f2937"
+    },
+    {
+        "type": "color",
+        "id": "text_color",
+        "label": "Description Text Color",
+        "default": "#4b5563"
+    },
+    
+    {
+        "type": "header",
+        "content": "📏 Typography Settings (Font Sizes)"
+    },
+    {
+        "type": "range",
+        "id": "callout_text_size",
+        "min": 0.5,
+        "max": 1,
+        "step": 0.1,    
+        "unit": "rem",
+        "label": "Callout Text Size",
+        "default": 0.8  
+    },
+    {
+        "type": "range",
+        "id": "headline_size_mobile",
+        "min": 1.5,
+        "max": 2,
+        "step": 0.1,
+        "unit": "rem",
+        "label": "Headline Size (Mobile)",
+        "default": 1.9 
+    },
+    {
+        "type": "range",
+        "id": "headline_size_desktop",
+        "min": 2.0,
+        "max": 3.0,
+        "step": 0.1,
+        "unit": "rem",
+        "label": "Headline Size (Desktop)",
+        "default": 2.3 
+    },
+    {
+        "type": "range",
+        "id": "feature_title_size_mobile",
+        "min": 0.8,
+        "max": 1,
+        "step": 0.1,    
+        "unit": "rem",
+        "label": "Feature Title Size (Mobile)",
+        "default": 1.0
+    },
+    {
+        "type": "range",
+        "id": "feature_title_size_desktop",
+        "min": 1.0,
+        "max": 1,
+        "step": 0.1,    
+        "unit": "rem",
+        "label": "Feature Title Size (Desktop)",
+        "default": 1.1
+    },
+    {
+        "type": "range",
+        "id": "feature_description_size",
+        "min": 0.8,   /* FIX APPLIED HERE: Changed from 0.75 to 0.8 */
+        "max": 1,
+        "step": 0.1,    
+        "unit": "rem",
+        "label": "Feature Description Size",
+        "default": 0.9 
+    },
+
+    {
+        "type": "header",
+        "content": "🖼️ Product Image Settings (Ratio)"
+    },
+    {
+        "type": "range",
+        "id": "product_image_ratio_w",
+        "min": 1,
+        "max": 1,
+        "step": 1,
+        "label": "Image Aspect Ratio - Width (W)",
+        "default": 4,
+        "info": "Sets the W in W:H ratio. e.g., 4"
+    },
+    {
+        "type": "range",
+        "id": "product_image_ratio_h",
+        "min": 1,
+        "max": 10,
+        "step": 1,
+        "label": "Image Aspect Ratio - Height (H)",
+        "default": 5,
+        "info": "Sets the H in W:H ratio. The default 4:5 creates a tall image."
+    },
+    {
+        "type": "header",
+        "content": "Spacing"
+    },
+    {
+        "type": "range",
+        "id": "section_spacing_y",
+        "min": 0,
+        "max": 1,
+        "step": 0.5,
+        "unit": "px",
+        "label": "Top and Bottom Section Spacing",
+        "default": 0.5
+    }
 ],
 "blocks": [
 {
