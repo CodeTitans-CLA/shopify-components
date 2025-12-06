@@ -1,0 +1,417 @@
+{% comment %}
+  This section displays an image on the left and a detailed text/feature list on the right.
+  Feature blocks now use simplified settings for easier admin editing.
+{% endcomment %}
+
+<style>
+  /* Base Styling */
+  .introduction-section {
+    padding: 60px 0;
+    font-family: Arial, sans-serif; 
+  }
+
+  /* Main Container */
+  .intro-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+    display: flex;
+    gap: 40px;
+    align-items: stretch; 
+  }
+
+  /* Left Side: Image and Caption (50% Width) */
+  .intro-left {
+    flex: 1; 
+    max-width: 50%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .intro-image-wrap {
+    position: relative;
+    padding-top: 100%; 
+    overflow: hidden;
+    border-radius: 6px;
+  }
+
+  .intro-image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .intro-caption {
+    background-color: {{ section.settings.caption_bg_color }};
+    color: {{ section.settings.caption_text_color }};
+    padding: 20px;
+    font-size: 1.25em;
+    font-weight: bold;
+    text-align: center;
+  }
+
+  /* Right Side: Text Content and Features (50% Width) */
+  .intro-right {
+    flex: 1; 
+    max-width: 50%;
+    padding: 20px 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .intro-super-title {
+    color: {{ section.settings.super_title_color }};
+    font-size: 0.9em;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 5px;
+  }
+
+  .intro-main-title {
+    color: {{ section.settings.main_title_color }};
+    font-size: 2.5em;
+    line-height: 1.2;
+    margin-bottom: 20px;
+    font-weight: bold;
+  }
+
+  .intro-description {
+    color: {{ section.settings.description_color }};
+    margin-bottom: 30px;
+    line-height: 1.6;
+  }
+
+  /* Feature Blocks (Blocks setting) */
+  .feature-block {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 25px;
+  }
+
+  /* Centralized Icon Styling */
+  .feature-icon-wrap {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    /* Use centralized colors from section settings */
+    background-color: {{ section.settings.icon_bg_color }}; 
+    color: {{ section.settings.icon_text_color }};
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.5em;
+    margin-right: 15px;
+    flex-shrink: 0; 
+  }
+
+  .feature-title {
+    color: {{ section.settings.feature_title_color }};
+    font-size: 1.1em;
+    font-weight: bold;
+    margin-bottom: 5px;
+  }
+
+  .feature-text {
+    color: {{ section.settings.feature_text_color }};
+    font-size: 0.95em;
+  }
+
+  /* Button Styling */
+  .intro-button {
+    display: inline-block;
+    padding: 12px 25px;
+    background-color: {{ section.settings.button_bg_color }};
+    color: {{ section.settings.button_text_color }};
+    border-radius: 4px;
+    text-decoration: none;
+    font-weight: 500;
+    margin-top: 15px;
+    transition: background-color 0.3s;
+  }
+  .intro-button:hover {
+    background-color: {{ section.settings.button_bg_color | color_modify: 'darken', 10 }};
+  }
+
+  /* Responsive Adjustments */
+  @media (max-width: 990px) {
+    .introduction-section {
+        padding: 40px 0;
+    }
+    .intro-container {
+      flex-direction: column;
+      gap: 20px;
+    }
+    .intro-left, .intro-right {
+      max-width: 100%;
+    }
+    .intro-image-wrap {
+      padding-top: 56.25%; /* 16:9 ratio on smaller screens */
+    }
+    .intro-caption {
+      text-align: left;
+    }
+    .intro-main-title {
+      font-size: 2em;
+    }
+  }
+</style>
+
+<div class="introduction-section">
+  <div class="intro-container">
+
+    {% comment %} === LEFT: Image and Caption === {% endcomment %}
+    <div class="intro-left">
+      {% if section.settings.image != blank %}
+        <div class="intro-image-wrap">
+          <img 
+            src="{{ section.settings.image | img_url: '1000x' }}" 
+            alt="{{ section.settings.image.alt | default: section.settings.main_title | escape }}"
+            class="intro-image"
+            loading="lazy"
+          >
+        </div>
+      {% else %}
+        <div class="intro-image-wrap" style="background-color: #f0f0f0;">
+          <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: #888;">
+            [Image Placeholder]
+          </div>
+        </div>
+      {% endif %}
+      
+      {% if section.settings.caption_text != blank %}
+        <div class="intro-caption">
+          {{ section.settings.caption_text | escape }}
+        </div>
+      {% endif %}
+    </div>
+
+    {% comment %} === RIGHT: Text Content and Blocks (Features are here) === {% endcomment %}
+    <div class="intro-right">
+      
+      {% if section.settings.super_title != blank %}
+        <p class="intro-super-title">{{ section.settings.super_title | escape }}</p>
+      {% endif %}
+      
+      {% if section.settings.main_title != blank %}
+        <h2 class="intro-main-title">{{ section.settings.main_title | escape }}</h2>
+      {% endif %}
+      
+      {% if section.settings.description != blank %}
+        <div class="intro-description">
+          {{ section.settings.description }}
+        </div>
+      {% endif %}
+
+      {% comment %} Dynamic Feature Blocks {% endcomment %}
+      {% for block in section.blocks %}
+        <div class="feature-block" {{ block.shopify_attributes }}>
+          <div class="feature-icon-wrap">
+            {% comment %} Renders the Font Awesome class inside <i>, or the simple text/emoji {% endcomment %}
+            {% if block.settings.icon_code contains 'fa-' %}
+                <i class="{{ block.settings.icon_code | escape }}"></i>
+            {% else %}
+                {{ block.settings.icon_code | escape | default: '?' }}
+            {% endif %}
+          </div>
+          <div class="feature-content">
+            <p class="feature-title">{{ block.settings.title | escape }}</p>
+            <p class="feature-text">{{ block.settings.text | escape }}</p>
+          </div>
+        </div>
+      {% endfor %}
+
+      {% comment %} Optional Call to Action Button {% endcomment %}
+      {% if section.settings.button_text != blank %}
+        <a href="{{ section.settings.button_link }}" class="intro-button">
+          {{ section.settings.button_text | escape }}
+        </a>
+      {% endif %}
+
+    </div>
+  </div>
+</div>
+
+{% comment %} === SCHEMA: Section Settings (Your Full Control) === {% endcomment %}
+{% schema %}
+{
+  "name": "Custom Introduction",
+  "tag": "section",
+  "class": "section-mission-introduction",
+  "max_blocks": 5,
+  "settings": [
+    {
+      "type": "header",
+      "content": "A. Layout and Image"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Left Feature Image"
+    },
+    {
+      "type": "text",
+      "id": "caption_text",
+      "label": "Image Caption Text",
+      "default": "Lorem ipsum simply free text available in the market to use anywhere you like or of need"
+    },
+    {
+      "type": "color",
+      "id": "caption_bg_color",
+      "label": "Caption Background Color",
+      "default": "#f3f4f6"
+    },
+    {
+      "type": "color",
+      "id": "caption_text_color",
+      "label": "Caption Text Color",
+      "default": "#1f2937"
+    },
+    
+    {
+      "type": "header",
+      "content": "B. Content & Typography"
+    },
+    {
+      "type": "text",
+      "id": "super_title",
+      "label": "Super Title (e.g., 'Our Introductions')",
+      "default": "Our Introductions"
+    },
+    {
+      "type": "color",
+      "id": "super_title_color",
+      "label": "Super Title Color",
+      "default": "#38a169"
+    },
+    {
+      "type": "text",
+      "id": "main_title",
+      "label": "Main Headline Title",
+      "default": "We believe we can save more lives"
+    },
+    {
+      "type": "color",
+      "id": "main_title_color",
+      "label": "Main Title Color",
+      "default": "#1f2937"
+    },
+    {
+      "type": "richtext",
+      "id": "description",
+      "label": "Main Description/Body Text",
+      "default": "<p>We are trusted by our clients and have a reputation for the best services in the field. Lorem ipsum dolor sit amett consectetur adipiscing elit.</p>"
+    },
+    {
+      "type": "color",
+      "id": "description_color",
+      "label": "Description Text Color",
+      "default": "#4b5563"
+    },
+    
+    {
+      "type": "header",
+      "content": "C. Feature Item Global Styles"
+    },
+    {
+      "type": "paragraph",
+      "content": "These styles apply to ALL feature items."
+    },
+    {
+      "type": "color",
+      "id": "icon_bg_color",
+      "label": "Icon Circle Background Color",
+      "default": "#10b981"
+    },
+    {
+      "type": "color",
+      "id": "icon_text_color",
+      "label": "Icon/Emoji Color",
+      "default": "#ffffff"
+    },
+    
+    {
+      "type": "header",
+      "content": "D. Call to Action Button"
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Button Text",
+      "default": "Learn More"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button Link"
+    },
+    {
+      "type": "color",
+      "id": "button_bg_color",
+      "label": "Button Background Color",
+      "default": "#059669"
+    },
+    {
+      "type": "color",
+      "id": "button_text_color",
+      "label": "Button Text Color",
+      "default": "#ffffff"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "feature",
+      "name": "Feature Item",
+      "settings": [
+        {
+          "type": "header",
+          "content": "Feature Content"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Feature Title",
+          "default": "Childrens Education"
+        },
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Feature Description",
+          "default": "Lorem ipsum dolor sit amet, consected elusmod tempor anagi ut."
+        },
+        {
+          "type": "header",
+          "content": "Icon/Text Settings"
+        },
+        {
+          "type": "text",
+          "id": "icon_code",
+          "label": "Icon Code (Class or Emoji)",
+          "info": "Use a Font Awesome class (e.g., fas fa-graduation-cap) OR a simple emoji/text (e.g., 🎓 or $)"
+        },
+        {
+          "type": "color",
+          "id": "feature_title_color",
+          "label": "Title Color",
+          "default": "#1f2937"
+        },
+        {
+          "type": "color",
+          "id": "feature_text_color",
+          "label": "Text Color",
+          "default": "#4b5563"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Mission Introduction 🤝",
+      "category": "Text and Image"
+    }
+  ]
+}
+{% endschema %}
