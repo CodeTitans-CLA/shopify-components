@@ -1,0 +1,220 @@
+{%- liquid
+  assign all_collections = collections
+  assign default_collection_label = section.settings.default_label | default: 'All Categories'
+  assign search_placeholder = section.settings.placeholder | default: 'Search products...'
+  assign button_label = section.settings.button_text | default: 'Search'
+  assign section_id = 'collection-search-' | append: section.id
+-%}
+
+<div class="collection-search-section {{ section.settings.custom_class }}" id="{{ section_id }}">
+  <div class="collection-search-wrapper">
+    <form action="{{ routes.search_url }}" method="get" role="search" class="collection-search-form">
+      
+      {% comment %} {# Dynamic Dropdown for Collections #} {% endcomment %}
+      <select name="options[prefix]" id="{{ section_id }}-collection-select" class="collection-select">
+        {# Default 'All' option, searches all resources #}
+        <option value="" {% if search.collection.handle == blank %}selected{% endif %}>
+          {{ default_collection_label }}
+        </option>
+        
+        {# Loop through all collections to populate the dropdown #}
+        {% for collection in all_collections %}
+          <option value="collection:{{ collection.handle }}" 
+                  {% if search.collection.handle == collection.handle %}selected{% endif %}>
+            {{ collection.title }}
+          </option>
+        {% endfor %}
+      </select>
+      
+      {% comment %} {# Search Input Field #} {% endcomment %}
+      <input 
+        type="search" 
+        name="q" 
+        value="{{ search.terms | escape }}" 
+        placeholder="{{ search_placeholder }}" 
+        class="search-input"
+        aria-label="{{ search_placeholder }}"
+      >
+      
+      {% comment %} {# Hidden input to ensure search is product-focused by default #} {% endcomment %}
+      <input type="hidden" name="type" value="product">
+
+      {% comment %} {# Submit Button #} {% endcomment %}
+      <button type="submit" class="search-button">
+        {{ button_label }}
+      </button>
+      
+    </form>
+  </div>
+</div>
+
+<style>
+  /* Basic Styles for the Search Bar Section */
+  #{{ section_id }} {
+    padding: {{ section.settings.padding_top }}px 0 {{ section.settings.padding_bottom }}px 0;
+    background-color: {{ section.settings.background_color }};
+  }
+  
+  .collection-search-wrapper {
+    max-width: {{ section.settings.max_width }}px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+  
+  .collection-search-form {
+    display: flex;
+    border: 1px solid {{ section.settings.border_color }};
+    border-radius: {{ section.settings.border_radius }}px;
+    overflow: hidden;
+    background-color: #fff; /* Ensure background is white */
+  }
+
+  .collection-select {
+    padding: 10px;
+    border: none;
+    border-right: 1px solid {{ section.settings.border_color }};
+    background-color: #f8f8f8;
+    cursor: pointer;
+    font-size: 14px;
+    outline: none;
+    flex-shrink: 0;
+  }
+
+  .search-input {
+    flex-grow: 1;
+    padding: 10px 15px;
+    border: none;
+    font-size: 16px;
+    outline: none;
+  }
+
+  .search-button {
+    padding: 10px 20px;
+    background-color: {{ section.settings.button_bg_color }};
+    color: {{ section.settings.button_text_color }};
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    flex-shrink: 0;
+  }
+
+  .search-button:hover {
+    opacity: 0.9;
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Collection Search Bar",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Text Settings"
+    },
+    {
+      "type": "text",
+      "id": "default_label",
+      "label": "Dropdown default label",
+      "default": "All Categories"
+    },
+    {
+      "type": "text",
+      "id": "placeholder",
+      "label": "Search input placeholder",
+      "default": "Search products..."
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Button text",
+      "default": "Search"
+    },
+    {
+      "type": "header",
+      "content": "Design & Layout"
+    },
+    {
+      "type": "range",
+      "id": "max_width",
+      "min": 400,
+      "max": 1200,
+      "step": 20,
+      "unit": "px",
+      "label": "Max width of search bar",
+      "default": 800
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Section background color",
+      "default": "#f4f4f4"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "label": "Padding top",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "label": "Padding bottom",
+      "default": 40
+    },
+    {
+      "type": "header",
+      "content": "Form Style"
+    },
+    {
+      "type": "color",
+      "id": "border_color",
+      "label": "Form border color",
+      "default": "#ccc"
+    },
+    {
+      "type": "range",
+      "id": "border_radius",
+      "min": 0,
+      "max": 50,
+      "step": 1,
+      "unit": "px",
+      "label": "Form border radius",
+      "default": 5
+    },
+    {
+      "type": "color",
+      "id": "button_bg_color",
+      "label": "Button background color",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "button_text_color",
+      "label": "Button text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "text",
+      "id": "custom_class",
+      "label": "Custom CSS class (Optional)",
+      "info": "For advanced styling."
+    }
+  ],
+  "presets": [
+    {
+      "name": "Collection Search Bar",
+      "category": "Text"
+    }
+  ]
+}
+{% endschema %}

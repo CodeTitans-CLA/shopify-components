@@ -45,4 +45,33 @@ For Liquid Code of the Collection List With Image section, please visit the foll
 For Liquid Code of the Feature Product Grid section, please visit the following section:  
 [See This Section](feature-product-grid.liquid)
 
+---
 
+## 6. Search Bar With Categories
+
+![Search Bar With Categories](images/Search-Bar-With-Categories.png)
+
+For Liquid Code of the Search Bar With Categories section, please visit the following section:  
+[See This Section](search-bar-with-categories.liquid)
+
+---
+
+## 7. Custom-Featured-Carousel
+
+
+![Custom-Featured-Carousel](images/Custom-Featured-Carousel.png)
+
+For Liquid Code of the Custom-Featured-Carousel section, please visit the following section:  
+[See This Section](custom-featured-carousel.liquid)
+
+
+---
+
+
+## 8. Custom-Introduction
+
+
+![Custom-Introduction](images/Custom-Introduction.png)
+
+For Liquid Code of the Custom-Introduction section, please visit the following section:  
+[See This Section](mission-introduction.liquid)
