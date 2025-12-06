@@ -49,9 +49,16 @@ For Liquid Code of the Feature Product Grid section, please visit the following 
 
 ## 6. Search Bar With Categories
 
-![Feature Product Grid](images/Search-Bar-With-Categories.png)
+![Search Bar With Categories](images/Search-Bar-With-Categories.png)
 
 For Liquid Code of the Search Bar With Categories section, please visit the following section:  
 [See This Section](search-bar-with-categories.liquid)
 
 
+## 7. Custom-Featured-Carousel
+
+
+![Feature Product Grid](images/Custom-Featured-Carousel.png)
+
+For Liquid Code of the Custom-Featured-Carousel section, please visit the following section:  
+[See This Section](Search Bar With Categories.liquid)

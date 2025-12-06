@@ -1,0 +1,499 @@
+{% comment %}
+  This section displays a featured collection with an overview banner and a product grid carousel.
+  It implements a 50/50 width split between the banner and the carousel.
+{% endcomment %}
+
+{% assign products_per_page = section.settings.products_per_row | times: section.settings.product_rows %}
+
+<style>
+  /* Basic Section Styling */
+  .collection-carousel-section {
+    padding: 40px 0;
+  }
+  .collection-carousel-inner {
+    display: flex;
+    max-width: 1200px; 
+    margin: 0 auto;
+    padding: 0 20px;
+    gap: 30px;
+  }
+  
+  /* Left Banner Styling (WIDTH CHANGE HERE) */
+  .collection-overview-banner {
+    /* 50% width for the banner */
+    flex: 0 0 50%; 
+    position: relative;
+    background-image: url('{{ section.settings.banner_image | img_url: 'large' }}');
+    background-size: cover;
+    background-position: center;
+    border-radius: 8px;
+    overflow: hidden;
+    min-height: 400px; 
+    display: flex;
+    align-items: flex-end; 
+  }
+  .banner-content-wrap {
+    padding: 30px;
+    width: 100%;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0) 100%);
+  }
+  .banner-title, .banner-description {
+    color: {{ section.settings.banner_text_color }};
+    text-align: {{ section.settings.banner_text_align }};
+  }
+  .banner-title {
+    font-size: 2em;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+  .banner-button {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: {{ section.settings.button_bg_color }};
+    color: {{ section.settings.button_text_color }};
+    border-radius: 4px;
+    text-decoration: none;
+    margin-top: 15px;
+    font-weight: 500;
+  }
+
+  /* Right Carousel Styling (Automatically takes remaining 50%) */
+  .product-carousel-wrap {
+    flex: 1; /* Takes up 100% of the remaining space (50%) */
+    position: relative;
+    padding: 0 30px; 
+  }
+
+  .product-carousel-container {
+    overflow: hidden; 
+    width: 100%;
+  }
+
+  /* Main Carousel Slides */
+  .product-page-list {
+    display: flex;
+    transition: transform 0.5s ease-in-out;
+  }
+
+  .product-page {
+    flex: 0 0 100%; 
+    box-sizing: border-box;
+    display: grid;
+    /* Grid setup based on settings */
+    grid-template-columns: repeat({{ section.settings.products_per_row }}, 1fr);
+    grid-template-rows: repeat({{ section.settings.product_rows }}, 1fr);
+    gap: 20px; 
+  }
+
+  /* Product Card Styling (No Change) */
+  .product-card-wrapper {
+    display: contents; 
+  }
+
+  .product-card {
+    display: flex;
+    flex-direction: column;
+    height: 100%; 
+    border: 1px solid {{ section.settings.card_border_color }};
+    border-radius: 4px;
+    overflow: hidden;
+    text-decoration: none;
+    color: inherit;
+    box-shadow: {{ section.settings.card_box_shadow }};
+    transition: box-shadow 0.3s ease;
+  }
+  .product-card:hover {
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+  }
+
+  /* Card Components (No Change) */
+  .product-image-wrap {
+    position: relative;
+    padding-top: 100%; 
+    overflow: hidden;
+  }
+  .product-image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .product-info {
+    padding: 15px;
+    flex-grow: 1; 
+    display: flex;
+    flex-direction: column;
+  }
+
+  .product-title {
+    font-size: 1.1em;
+    margin-bottom: 5px;
+    color: {{ section.settings.product_title_color }};
+    display: -webkit-box;
+    -webkit-line-clamp: {{ section.settings.title_line_limit }};
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    line-height: 1.3;
+    max-height: calc(1.3em * {{ section.settings.title_line_limit }});
+  }
+
+  .product-price {
+    margin-top: auto; 
+    font-size: 1.2em;
+    font-weight: bold;
+    color: {{ section.settings.product_price_color }};
+  }
+
+  /* Carousel Navigation Arrows (No Change) */
+  .carousel-nav-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5em;
+    line-height: 0;
+    opacity: 0.9;
+    transition: opacity 0.2s;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); 
+  }
+  .carousel-nav-arrow:hover {
+    opacity: 1;
+  }
+  .arrow-prev {
+    left: 0; 
+  }
+  .arrow-next {
+    right: 0; 
+  }
+
+  /* Responsive Adjustments (No Change) */
+  @media (max-width: 990px) {
+    .collection-carousel-inner {
+      flex-direction: column;
+    }
+    .collection-overview-banner {
+      /* Revert to 100% width on smaller screens for stacking */
+      flex: 0 0 100%; 
+      min-height: 250px;
+    }
+    .product-carousel-wrap {
+      padding: 0 10px; 
+    }
+    .product-page {
+      grid-template-columns: repeat(2, 1fr);
+      grid-template-rows: repeat(auto-fit, 1fr); 
+    }
+    .arrow-prev { left: -10px; }
+    .arrow-next { right: -10px; }
+  }
+  @media (max-width: 550px) {
+    .product-page {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<div class="collection-carousel-section">
+  <div class="collection-carousel-inner">
+
+    {% comment %} === LEFT: Overview Banner (Now 50% Wide) === {% endcomment %}
+    <a href="{{ section.settings.collection.url }}" class="collection-overview-banner">
+      <div class="banner-content-wrap">
+        <h2 class="banner-title">{{ section.settings.banner_title | escape }}</h2>
+        <p class="banner-description">{{ section.settings.banner_description }}</p>
+        <div class="banner-button">{{ section.settings.button_text | default: 'Shop Now' }}</div>
+      </div>
+    </a>
+
+    {% comment %} === RIGHT: Product Carousel Wrapper (Now 50% Wide) === {% endcomment %}
+    <div class="product-carousel-wrap">
+      {% assign collection = section.settings.collection %}
+      {% if collection != blank %}
+        {% assign total_products = collection.products_count %}
+
+        <div class="product-carousel-container">
+          <div class="product-page-list" id="ProductPageList-{{ section.id }}">
+
+            {% assign current_product_index = 0 %}
+            {% assign page_index = 0 %}
+
+            {% comment %} Loop through products and group them into pages/slides {% endcomment %}
+            {% for product in collection.products limit: section.settings.product_limit %}
+
+              {% assign is_start_of_page = current_product_index | modulo: products_per_page %}
+
+              {% if is_start_of_page == 0 %}
+                {% if page_index > 0 %}
+                  </div>{% comment %} End previous product-page {% endcomment %}
+                {% endif %}
+                {% assign page_index = page_index | plus: 1 %}
+                <div class="product-page" data-page-index="{{ page_index }}">
+              {% endif %}
+
+                <div class="product-card-wrapper">
+                  <a href="{{ product.url | within: collection }}" class="product-card">
+
+                    <div class="product-image-wrap">
+                      {% if product.featured_image != blank %}
+                        <img
+                          class="product-image"
+                          src="{{ product.featured_image | img_url: 'medium' }}"
+                          alt="{{ product.featured_image.alt | escape }}"
+                          loading="lazy"
+                        >
+                      {% else %}
+                        <div class="product-image" style="background-color: #f0f0f0;"></div>
+                      {% endif %}
+                    </div>
+
+                    <div class="product-info">
+                      <p class="product-title">{{ product.title | escape }}</p>
+                      <p class="product-price">{{ product.price | money }}</p>
+                    </div>
+
+                  </a>
+                </div>
+
+              {% assign current_product_index = current_product_index | plus: 1 %}
+            {% endfor %}
+
+            {% if collection.products_count > 0 %}
+              </div>{% comment %} Close the final product-page div {% endcomment %}
+            {% endif %}
+
+          </div>
+        </div>
+
+        {% comment %} Navigation Arrows {% endcomment %}
+        {% assign total_pages = current_product_index | divided_by: products_per_page | ceil %}
+        {% if total_pages > 1 %}
+          <button class="carousel-nav-arrow arrow-prev" aria-label="Previous Slide" disabled>
+            &lt;
+          </button>
+          <button class="carousel-nav-arrow arrow-next" aria-label="Next Slide">
+            &gt;
+          </button>
+        {% endif %}
+        
+        {% comment %} JAVASCRIPT for sliding (No Change) {% endcomment %}
+        <script>
+          document.addEventListener('DOMContentLoaded', function() {
+              const pageList = document.getElementById('ProductPageList-{{ section.id }}');
+              const wrapper = pageList.closest('.product-carousel-wrap');
+              const prevButton = wrapper.querySelector('.arrow-prev');
+              const nextButton = wrapper.querySelector('.arrow-next');
+              
+              const totalPages = {{ total_pages }};
+              let currentPage = 0; // 0-indexed
+
+              if (totalPages <= 1) {
+                  return; 
+              }
+
+              function updateCarousel() {
+                  const translateValue = -currentPage * 100; 
+                  pageList.style.transform = `translateX(${translateValue}%)`;
+
+                  // Update button states
+                  prevButton.disabled = currentPage === 0;
+                  nextButton.disabled = currentPage === totalPages - 1;
+                  
+                  prevButton.style.opacity = currentPage === 0 ? 0.4 : 1;
+                  nextButton.style.opacity = currentPage === totalPages - 1 ? 0.4 : 1;
+              }
+
+              nextButton.addEventListener('click', () => {
+                  if (currentPage < totalPages - 1) {
+                      currentPage++;
+                      updateCarousel();
+                  }
+              });
+
+              prevButton.addEventListener('click', () => {
+                  if (currentPage > 0) {
+                      currentPage--;
+                      updateCarousel();
+                  }
+              });
+
+              updateCarousel(); // Initialize position
+          });
+        </script>
+
+      {% else %}
+        <div class="placeholder-content">
+          <p>Please select a collection in the theme editor.</p>
+        </div>
+      {% endif %}
+
+    </div>
+
+  </div>
+</div>
+
+
+{% comment %} === SCHEMA: Section Settings (No Change) === {% endcomment %}
+{% schema %}
+{
+  "name": "Custom Featured Carousel",
+  "tag": "section",
+  "class": "section-featured-collection-carousel",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Collection Selection"
+    },
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Collection to feature"
+    },
+    {
+      "type": "range",
+      "id": "product_limit",
+      "min": 4,
+      "max": 50,
+      "step": 1,
+      "default": 12,
+      "label": "Total products to load"
+    },
+    {
+      "type": "header",
+      "content": "Carousel Grid Settings"
+    },
+    {
+      "type": "range",
+      "id": "products_per_row",
+      "min": 2,
+      "max": 4,
+      "step": 1,
+      "default": 2,
+      "label": "Columns (Products per Row)"
+    },
+    {
+      "type": "range",
+      "id": "product_rows",
+      "min": 1,
+      "max": 3,
+      "step": 1,
+      "default": 2,
+      "label": "Rows per Slide"
+    },
+    {
+      "type": "paragraph",
+      "content": "Total products per slide: Columns x Rows."
+    },
+    {
+      "type": "header",
+      "content": "Left Overview Banner"
+    },
+    {
+      "type": "image_picker",
+      "id": "banner_image",
+      "label": "Banner Background Image"
+    },
+    {
+      "type": "text",
+      "id": "banner_title",
+      "label": "Banner Title Text",
+      "default": "Featued Fresh Vegetables"
+    },
+    {
+      "type": "richtext",
+      "id": "banner_description",
+      "label": "Banner Description/Offer Text",
+      "default": "<p>Up to 45% Off! Lorem ipsum dolor sit amet...</p>"
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Button Text",
+      "default": "Shop Now"
+    },
+    {
+      "type": "color",
+      "id": "banner_text_color",
+      "label": "Banner Text Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "button_bg_color",
+      "label": "Button Background Color",
+      "default": "#38a169"
+    },
+    {
+      "type": "color",
+      "id": "button_text_color",
+      "label": "Button Text Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "select",
+      "id": "banner_text_align",
+      "label": "Text Alignment",
+      "default": "left",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "right", "label": "Right" }
+      ]
+    },
+    {
+      "type": "header",
+      "content": "Product Card Styling"
+    },
+    {
+      "type": "color",
+      "id": "product_title_color",
+      "label": "Product Title Color",
+      "default": "#222222"
+    },
+    {
+      "type": "color",
+      "id": "product_price_color",
+      "label": "Product Price Color",
+      "default": "#e53e3e"
+    },
+    {
+      "type": "color",
+      "id": "card_border_color",
+      "label": "Card Border Color",
+      "default": "#e2e8f0"
+    },
+    {
+      "type": "text",
+      "id": "card_box_shadow",
+      "label": "Card Box Shadow (CSS Value)",
+      "default": "0 1px 3px rgba(0, 0, 0, 0.05)"
+    },
+    {
+      "type": "range",
+      "id": "title_line_limit",
+      "min": 1,
+      "max": 3,
+      "step": 1,
+      "default": 2,
+      "label": "Product Title Max Lines"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Featured Collection Carousel Grid",
+      "category": "Collection"
+    }
+  ]
+}
+{% endschema %}
