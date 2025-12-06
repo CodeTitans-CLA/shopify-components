@@ -1,0 +1,499 @@
+{% comment %}
+  Section: FAQ Hero Split - Updated with Width Control and Image Overlay
+  File: sections/faq-hero-split.liquid
+{% endcomment %}
+
+<style>
+  /* Base styling and width control */
+  .faq-hero-split__wrapper {
+    max-width: {{ section.settings.max_width }}px; /* New: Section Width Control */
+    margin: 0 auto;
+  }
+
+  .faq-hero-split {
+    display: flex;
+    width: 100%;
+    margin: 0;
+  }
+
+  /* Left column - Q&A section */
+  .faq-hero-split__left {
+    flex: 1;
+    position: relative;
+    padding: {{ section.settings.padding_vertical }}px {{ section.settings.padding_horizontal }}px;
+    /* Background and Overlay settings */
+    z-index: 1;
+  }
+
+  /* Background image container for the left side */
+  .faq-hero-split__left-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    z-index: -1; /* Place behind content */
+  }
+
+  .faq-hero-split__left-background img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: {{ section.settings.bg_brightness | divided_by: 100 }}; /* Brightness/Opacity control */
+  }
+
+  /* NEW: Image Overlay for the left side */
+  .faq-hero-split__left-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: {{ section.settings.overlay_color }};
+    opacity: {{ section.settings.overlay_opacity | divided_by: 100 }};
+    z-index: 0; /* Above the image, below the content */
+  }
+
+  /* Right column - Hero image */
+  .faq-hero-split__right {
+    flex: 1;
+    min-height: 250px; /* Base height for image */
+  }
+
+  .faq-hero-split__right img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* Q&A Text Styling */
+  .faq-hero-split__heading {
+    color: {{ section.settings.heading_color }};
+    font-size: {{ section.settings.heading_size }}px;
+    text-align: {{ section.settings.text_align }};
+    margin-bottom: 5px;
+  }
+
+  .faq-hero-split__subheading {
+    color: {{ section.settings.subheading_color }};
+    font-size: {{ section.settings.subheading_size }}px;
+    text-align: {{ section.settings.text_align }};
+    margin-bottom: 20px;
+  }
+
+  /* FAQ Block Styling */
+  .faq-block__item {
+    border-bottom: 1px solid {{ section.settings.divider_color }};
+    margin-bottom: 10px;
+    background: {{ section.settings.block_bg_color }};
+  }
+
+  .faq-block__question {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding: 15px 0;
+    cursor: pointer;
+    font-size: {{ section.settings.question_size }}px;
+    color: {{ section.settings.question_color }};
+    border: none;
+    background: none;
+    text-align: left;
+  }
+
+  .faq-hero-split__blocks {
+  position: relative;
+  z-index: 5;
+}
+
+  .faq-block__icon {
+    font-size: 20px;
+    line-height: 1;
+    transition: transform 0.3s ease;
+    flex-shrink: 0; /* Prevent icon from shrinking */
+    margin-left: 10px;
+  }
+  
+  .faq-block__question[aria-expanded="true"] .faq-block__icon {
+    transform: rotate(45deg); /* Change + to x */
+  }
+
+  .faq-block__answer {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease-out, padding 0.3s ease-out;
+    padding: 0;
+    color: {{ section.settings.answer_color }};
+    font-size: {{ section.settings.answer_size }}px;
+  }
+
+  /* Active state for answer */
+  .faq-block__answer[data-expanded="true"] {
+    max-height: 500px; /* Sufficient height for content */
+    padding-bottom: 15px;
+  }
+
+  /* Responsive adjustments for mobile/smaller screens */
+  @media (max-width: 768px) {
+    .faq-hero-split {
+      flex-direction: column;
+    }
+    .faq-hero-split__left, .faq-hero-split__right {
+      flex: none;
+      width: 100%;
+    }
+    .faq-hero-split__right {
+      min-height: 300px; /* Ensure mobile image has height */
+    }
+    /* Adjust text sizes for better fit on small screens */
+    .faq-hero-split__heading {
+      font-size: 36px;
+    }
+  }
+</style>
+
+<div class="faq-hero-split__wrapper">
+  <div class="faq-hero-split">
+    
+    {% comment %} {# LEFT COLUMN - Q&A Section #} {% endcomment %}
+    <div class="faq-hero-split__left">
+      
+      {% comment %} {# Background Image and Brightness Control #} {% endcomment %}
+      {% if section.settings.bg_image != blank %}
+        <div class="faq-hero-split__left-background">
+          <img
+            src="{{ section.settings.bg_image | img_url: '1000x' }}"
+            alt="{{ section.settings.bg_image.alt | default: 'Background image for FAQ section' }}"
+            loading="lazy"
+          >
+        </div>
+      {% endif %}
+
+      {% comment %} {# NEW: Image Overlay #} {% endcomment %}
+      <div class="faq-hero-split__left-overlay"></div>
+
+      {% comment %} {# Q&A Content #} {% endcomment %}
+      <p class="faq-hero-split__subheading">
+        {{ section.settings.subheading | escape }}
+      </p>
+      <h2 class="faq-hero-split__heading">
+        {{ section.settings.heading | escape }}
+      </h2>
+      
+      <div class="faq-hero-split__blocks">
+        {% for block in section.blocks %}
+          <div class="faq-block__item" {{ block.shopify_attributes }}>
+            <button class="faq-block__question" aria-expanded="false" aria-controls="Answer-{{ section.id }}-{{ forloop.index }}">
+              <span class="faq-block__question-text">{{ block.settings.question | escape }}</span>
+              <span class="faq-block__icon" aria-hidden="true">+</span>
+            </button>
+            <div 
+              class="faq-block__answer" 
+              id="Answer-{{ section.id }}-{{ forloop.index }}" 
+              role="region" 
+              aria-labelledby="Question-{{ section.id }}-{{ forloop.index }}"
+              data-expanded="false"
+            >
+              {{ block.settings.answer }}
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+
+      {% if section.blocks.size == 0 %}
+        <p style="color:white; text-align:center;">Add FAQ blocks in the theme editor.</p>
+      {% endif %}
+
+    </div>
+
+    {% comment %} {# RIGHT COLUMN - Hero Image Upload #} {% endcomment %}
+    <div class="faq-hero-split__right">
+      {% if section.settings.hero_image != blank %}
+        <img
+          src="{{ section.settings.hero_image | img_url: '1000x' }}"
+          alt="{{ section.settings.hero_image.alt | default: 'Hero image for FAQ section' }}"
+          loading="lazy"
+        >
+      {% else %}
+        {% comment %} Placeholder content if no image is uploaded {% endcomment %}
+        <div style="height: 100%; display: flex; align-items: center; justify-content: center; background-color: #f0f0f0;">
+          <span style="color: #888;">[Right-Side Image Upload Option]</span>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<script>
+  // JavaScript for collapsible FAQ functionality (unchanged)
+  document.querySelectorAll('.faq-hero-split .faq-block__question').forEach(button => {
+    button.addEventListener('click', () => {
+      const answer = button.nextElementSibling;
+      const isExpanded = button.getAttribute('aria-expanded') === 'true';
+
+      // Close all other open answers in this section
+      document.querySelectorAll('.faq-hero-split .faq-block__question').forEach(otherButton => {
+        if (otherButton !== button && otherButton.getAttribute('aria-expanded') === 'true') {
+          otherButton.setAttribute('aria-expanded', 'false');
+          otherButton.nextElementSibling.setAttribute('data-expanded', 'false');
+        }
+      });
+
+      // Toggle current answer
+      if (isExpanded) {
+        button.setAttribute('aria-expanded', 'false');
+        answer.setAttribute('data-expanded', 'false');
+      } else {
+        button.setAttribute('aria-expanded', 'true');
+        answer.setAttribute('data-expanded', 'true');
+      }
+    });
+  });
+</script>
+
+
+{% schema %}
+{
+  "name": "FAQ Hero Split",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Section Layout"
+    },
+    {
+      "type": "range",
+      "id": "max_width",
+      "min": 800,
+      "max": 1800,
+      "step": 50,
+      "unit": "px",
+      "label": "Section Maximum Width",
+      "default": 1400,
+      "info": "Controls the overall width of the entire section on large screens."
+    },
+    {
+      "type": "header",
+      "content": "Section Titles"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Sub-Heading",
+      "default": "Question & Answers"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Main Heading",
+      "default": "We inspire and help them live better"
+    },
+    {
+      "type": "select",
+      "id": "text_align",
+      "label": "Text Alignment",
+      "default": "left",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        }
+      ]
+    },
+    {
+      "type": "header",
+      "content": "Left Column (Q&A) Background"
+    },
+    {
+      "type": "image_picker",
+      "id": "bg_image",
+      "label": "Background Image"
+    },
+    {
+      "type": "range",
+      "id": "bg_brightness",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "label": "Background Image Opacity/Brightness",
+      "default": 30,
+      "info": "Lower percentage makes the image dimmer/darker."
+    },
+    {
+      "type": "color",
+      "id": "overlay_color",
+      "label": "Image Overlay Color",
+      "default": "#000000",
+      "info": "Adds a color layer over the background image."
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "label": "Overlay Opacity",
+      "default": 40,
+      "info": "The intensity of the color overlay."
+    },
+    {
+      "type": "header",
+      "content": "Color & Text Settings"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Main Heading Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "heading_size",
+      "min": 24,
+      "max": 64,
+      "step": 2,
+      "unit": "px",
+      "label": "Main Heading Size",
+      "default": 48
+    },
+    {
+      "type": "color",
+      "id": "subheading_color",
+      "label": "Sub-Heading Color",
+      "default": "#a8a8a8"
+    },
+    {
+      "type": "range",
+      "id": "subheading_size",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "label": "Sub-Heading Size",
+      "default": 16
+    },
+    {
+      "type": "color",
+      "id": "question_color",
+      "label": "Question Text Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "question_size",
+      "min": 14,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "label": "Question Text Size",
+      "default": 18
+    },
+    {
+      "type": "color",
+      "id": "answer_color",
+      "label": "Answer Text Color",
+      "default": "#cccccc"
+    },
+     {
+      "type": "range",
+      "id": "answer_size",
+      "min": 12,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "label": "Answer Text Size",
+      "default": 15
+    },
+    {
+      "type": "color",
+      "id": "divider_color",
+      "label": "FAQ Divider Color",
+      "default": "#3c3c3c"
+    },
+    {
+      "type": "color",
+      "id": "block_bg_color",
+      "label": "FAQ Block Background Color",
+      "default": "rgba(0,0,0,0)"
+    },
+    {
+      "type": "header",
+      "content": "Right Column (Hero Image) Settings"
+    },
+    {
+      "type": "image_picker",
+      "id": "hero_image",
+      "label": "Right Side Hero Image"
+    },
+    {
+      "type": "header",
+      "content": "Section Spacing"
+    },
+     {
+      "type": "range",
+      "id": "padding_vertical",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "label": "Vertical Padding",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "padding_horizontal",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "label": "Horizontal Padding",
+      "default": 40
+    }
+  ],
+  "blocks": [
+    {
+      "type": "faq_item",
+      "name": "FAQ Item",
+      "settings": [
+        {
+          "type": "text",
+          "id": "question",
+          "label": "Question",
+          "default": "We help to create better lives"
+        },
+        {
+          "type": "richtext",
+          "id": "answer",
+          "label": "Answer",
+          "default": "<p>Your detailed answer goes here. You can use **bold** and *italic* formatting, or even add links.</p>"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "FAQ Hero Split",
+      "category": "Text",
+      "blocks": [
+        {
+          "type": "faq_item"
+        },
+        {
+          "type": "faq_item"
+        },
+        {
+          "type": "faq_item"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

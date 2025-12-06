@@ -75,3 +75,15 @@ For Liquid Code of the Custom-Featured-Carousel section, please visit the follow
 
 For Liquid Code of the Custom-Introduction section, please visit the following section:  
 [See This Section](mission-introduction.liquid)
+
+
+---
+
+
+## 9. Custom-FAQ
+
+
+![Custom-FAQ](images/Custom-FAQ.png)
+
+For Liquid Code of the Custom-FAQ section, please visit the following section:  
+[See This Section](custom-faq.liquid)
