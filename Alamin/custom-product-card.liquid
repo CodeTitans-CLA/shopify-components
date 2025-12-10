@@ -1,0 +1,449 @@
+{% comment %}
+    FINAL PROFESSIONAL PRODUCT CARD SECTION (Optimized & Clean)
+    Features: Enhanced Image Background, Super Clean Content Area (Name, Price, Vendor, Stock ONLY), Full Color Customization.
+{% endcomment %}
+
+{% assign accent_color = section.settings.accent_color %}
+{% assign button_color = section.settings.button_color %}
+{% assign image_bg_color = section.settings.image_bg_color %}
+{% assign content_bg_color = section.settings.content_bg_color %}
+{% assign text_color_main = section.settings.text_color_main %}
+{% assign text_color_light = section.settings.text_color_light %}
+{% assign separator_color = section.settings.separator_color %}
+{% assign section_bg_color = section.settings.section_bg_color %}
+
+{% assign collection = collections[section.settings.collection_handle] %}
+
+<style>
+    /* -------------------------------------- */
+    /* CSS STYLES FOR THE PRODUCT CARD */
+    /* -------------------------------------- */
+    
+    /* Variables for Dynamic CSS */
+    :root {
+        --accent-color: {{ accent_color }};
+        --button-color: {{ button_color }};
+        --image-bg: {{ image_bg_color }};
+        --content-bg: {{ content_bg_color }};
+        --text-main: {{ text_color_main }};
+        --text-light: {{ text_color_light }};
+        --separator-line: {{ separator_color }};
+        --section-bg: {{ section_bg_color }}; /* NEW: Section Background Color */
+        
+        --name-font-size: {{ section.settings.name_font_size }}px;
+        --detail-font-size: {{ section.settings.detail_font_size }}px;
+    }
+
+    .collection-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 30px;
+        padding: 40px 20px;
+        max-width: {{ section.settings.max_width }}px;
+        margin: 0 auto;
+        background-color: var(--section-bg); /* UPDATED to use NEW setting */
+    }
+
+    /* Outer wrapper card style */
+    .product-card {
+        width: 100%;
+        min-height: 600px;
+        background-color: var(--content-bg);
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+        font-family: 'Poppins', Arial, sans-serif; /* Added a common professional font */
+        color: var(--text-main);
+        overflow: hidden;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .product-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 18px 45px rgba(0, 0, 0, 0.8);
+    }
+
+    /* --- Image Area (Top half) --- */
+    .image-area {
+        position: relative;
+        height: 320px; 
+        padding: 40px 20px;
+        text-align: center;
+        overflow: hidden;
+        
+        /* IMPROVED PROFESSIONAL GRADIENT BACKGROUND */
+        background: 
+            radial-gradient(circle at 50% 110%, var(--accent-color) 0%, rgba(0,0,0,0) 55%), /* Central spotlight (using accent) */
+            linear-gradient(to bottom, var(--image-bg) 0%, color-mix(in srgb, var(--image-bg) 80%, black) 100%); /* Base color with dark fade */
+        background-color: var(--image-bg);
+        
+        z-index: 1;
+    }
+    
+    .image-area img {
+        max-height: 100%;
+        max-width: 100%;
+        object-fit: contain;
+        position: relative;
+        z-index: 2;
+        /* Subtle, focused shadow */
+        filter: drop-shadow(0 0 10px rgba(0, 0, 0, 0.6)) drop-shadow(0 0 5px var(--accent-color));
+    }
+    
+    .price-tag {
+        position: absolute;
+        top: 0;
+        right: 0;
+        /* Using a more subtle accent color tag */
+        background-color: color-mix(in srgb, var(--accent-color) 90%, black); 
+        padding: 10px 25px;
+        border-bottom-left-radius: 20px;
+        color: var(--text-main); 
+        font-weight: 900;
+        z-index: 3;
+        font-size: 20px;
+        letter-spacing: 0.5px;
+    }
+
+    /* --- Abstract Shapes (Retaining the visual style, but simplified) --- */
+    .abstract-shape {
+        position: absolute;
+        opacity: 0.2; /* Making shapes less intrusive */
+        z-index: 1;
+        pointer-events: none;
+    }
+    /* Black Ring shape */
+    .shape-ring-black {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        border: 4px solid var(--separator-line); 
+        background-color: #000000; /* True black interior for contrast */
+        box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.8);
+    }
+    /* Wave shape */
+    .shape-wave {
+        width: 40px;
+        height: 20px;
+        border-radius: 0 0 100% 100%;
+        background: var(--accent-color);
+        box-shadow: none;
+    }
+
+    /* Specific Positioning (Matching the Headphone image) */
+    .image-area .shape-ring-black:nth-child(3) { top: 30px; right: 80px; transform: rotate(10deg); }
+    .image-area .shape-ring-black:nth-child(4) { bottom: 30px; left: 20px; transform: rotate(45deg); }
+    .image-area .shape-ring-black:nth-child(5) { top: 120px; left: 50%; transform: translateX(-50%); width: 70px; height: 70px; }
+    .image-area .shape-wave:nth-child(6) { top: 20px; left: 10px; transform: rotate(180deg); }
+    .image-area .shape-wave:nth-child(7) { bottom: 10px; right: 10px; transform: rotate(0deg); }
+
+
+    /* --- Content Area (Bottom half) --- */
+    .content-area {
+        padding: 30px 20px 20px;
+        min-height: 280px;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .content-top {
+        display: flex;
+        flex-grow: 1; 
+    }
+
+    .main-info {
+        flex: 1.5;
+        padding-right: 15px;
+    }
+
+    .details-info-wrapper {
+        flex: 1;
+        position: relative;
+    }
+    
+    /* Vertical Separator Line */
+    .details-info-wrapper::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 0;
+        height: 100%;
+        width: 2px;
+        background-color: var(--separator-line);
+        opacity: 0.7;
+    }
+    
+    .details-info {
+        padding-left: 15px;
+    }
+
+    .product-name {
+        font-size: var(--name-font-size);
+        font-weight: 900; 
+        margin-bottom: 5px; 
+        color: var(--text-main);
+        text-transform: uppercase;
+        line-height: 1.1;
+    }
+    
+    /* Horizontal Separator */
+    .horizontal-separator {
+        width: 100%;
+        height: 2px;
+        background-color: var(--separator-line);
+        opacity: 0.7;
+        margin-top: 10px;
+        margin-bottom: 20px; 
+    }
+
+    .details-row {
+        margin-bottom: 15px; /* Increased space for better readability */
+        line-height: 1.2;
+    }
+
+    .details-title {
+        color: var(--accent-color); 
+        font-size: var(--detail-font-size);
+        text-transform: uppercase;
+        font-weight: bold;
+        margin-bottom: 4px; /* Slightly more space for the text below */
+        letter-spacing: 0.5px;
+    }
+    
+    .details-text {
+        color: var(--text-light); 
+        font-size: var(--detail-font-size);
+        font-weight: 600; /* Making detail text slightly bolder */
+    }
+
+    /* --- Button Area --- */
+    .button-wrapper {
+        width: 100%;
+        padding-top: 10px;
+        padding-bottom: 10px;
+    }
+
+    .add-to-cart-btn {
+        display: block;
+        width: 90%; /* Wider button */
+        margin: 0 auto;
+        padding: 15px; /* Taller button */
+        background-color: var(--button-color); 
+        color: var(--text-main); 
+        text-align: center;
+        border: none;
+        border-radius: 12px; /* Slightly more rounded */
+        font-weight: 900;
+        text-transform: uppercase;
+        cursor: pointer;
+        text-decoration: none;
+        transition: background-color 0.3s ease, transform 0.1s ease;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+    }
+
+    .add-to-cart-btn:hover {
+        background-color: color-mix(in srgb, var(--button-color) 80%, black); 
+        transform: translateY(-2px);
+    }
+</style>
+
+<div class="collection-grid">
+    {% if collection and collection.products.size > 0 %}
+        {% for product in collection.products limit: section.settings.product_limit %}
+        
+            {% assign price = product.price | money %}
+            {% assign image_url = product.featured_media | image_url: width: 400 %}
+            {% assign is_available = product.available %}
+            {% assign stock_qty = product.variants.first.inventory_quantity | default: 0 %}
+            
+            <div class="product-card">
+                <a href="{{ product.url }}" style="text-decoration: none; color: inherit;">
+                    
+                    <div class="image-area">
+                        
+                        <div class="price-tag">{{ price }}</div>
+                        
+                        <div class="abstract-shape shape-ring-black"></div>
+                        <div class="abstract-shape shape-ring-black"></div>
+                        <div class="abstract-shape shape-ring-black"></div>
+                        <div class="abstract-shape shape-wave"></div>
+                        <div class="abstract-shape shape-wave"></div>
+
+                        {% if product.featured_media %}
+                            <img src="{{ image_url }}" alt="{{ product.featured_media.alt | default: product.title }}">
+                        {% else %}
+                            <p style="color: var(--text-main); padding-top: 100px; position: relative; z-index: 2;">No Image</p>
+                        {% endif %}
+                    </div>
+                </a>
+
+                <div class="content-area">
+                    <div class="content-top">
+                        <div class="main-info">
+                            <a href="{{ product.url }}" style="text-decoration: none; color: inherit;">
+                                <div class="product-name">{{ product.title }}</div>
+                            </a>
+                            
+                            <div class="horizontal-separator"></div>
+                        </div>
+
+                        <div class="details-info-wrapper">
+                            <div class="details-info">
+                                
+                                <div class="details-row">
+                                    <div class="details-title">VENDOR</div>
+                                    <div class="details-text">{{ product.vendor }}</div>
+                                </div>
+                                
+                                <div class="details-row">
+                                    <div class="details-title">AVAILABILITY</div>
+                                    <div class="details-text" style="color: {% if is_available %}#0c0{% else %}#f00{% endif %};">
+                                        {% if is_available %}
+                                            IN STOCK
+                                        {% else %}
+                                            OUT OF STOCK
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                
+                                <div class="details-row">
+                                    <div class="details-title">SHIPPING</div>
+                                    <div class="details-text">3-5 BUSINESS DAYS</div>
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="button-wrapper">
+                         <a href="{{ product.url }}" class="add-to-cart-btn">
+                            VIEW PRODUCT
+                        </a>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+
+    {% else %}
+        <div style="text-align: center; grid-column: 1 / -1; color: #888; background-color: #2D2D2D; padding: 20px; border-radius: 20px;">
+            <p>Please select a collection in the Theme Editor to display the products.</p>
+        </div>
+    {% endif %}
+</div>
+
+
+{% schema %}
+{
+    "name": "Custom Product Card",
+    "settings": [
+        {
+            "type": "collection",
+            "id": "collection_handle",
+            "label": "Select Product Collection"
+        },
+        {
+            "type": "range",
+            "id": "product_limit",
+            "min": 1,
+            "max": 50,
+            "step": 1,
+            "label": "Number of products to show",
+            "default": 4
+        },
+        {
+            "type": "range",
+            "id": "max_width",
+            "min": 800,
+            "max": 1600,
+            "step": 50,
+            "unit": "px",
+            "label": "Maximum Grid Width",
+            "default": 1400
+        },
+        {
+            "type": "header",
+            "content": "A. CARD BACKGROUNDS"
+        },
+        {
+            "type": "color",
+            "id": "section_bg_color",
+            "label": "Full Section Background Color",
+            "default": "#222222"
+        },
+        {
+            "type": "color",
+            "id": "image_bg_color",
+            "label": "Image Section Base Background (Top)",
+            "default": "#1a1a1a"
+        },
+        {
+            "type": "color",
+            "id": "content_bg_color",
+            "label": "Content Section Background (Bottom/Dark Gray)",
+            "default": "#2D2D2D"
+        },
+        {
+            "type": "header",
+            "content": "B. COLOR ACCENTS & SEPARATORS"
+        },
+        {
+            "type": "color",
+            "id": "accent_color",
+            "label": "Primary Accent Color (Spotlight/Title/Details)",
+            "default": "#C850C0"
+        },
+        {
+            "type": "color",
+            "id": "button_color",
+            "label": "Button Background Color",
+            "default": "#C850C0"
+        },
+        {
+            "type": "color",
+            "id": "separator_color",
+            "label": "Vertical/Horizontal Separator Line Color",
+            "default": "#444444"
+        },
+        {
+            "type": "header",
+            "content": "C. TEXT & FONT SETTINGS"
+        },
+        {
+            "type": "color",
+            "id": "text_color_main",
+            "label": "Main Text Color (Name, Price, Button Text)",
+            "default": "#ffffff"
+        },
+        {
+            "type": "color",
+            "id": "text_color_light",
+            "label": "Light Text Color (Details)",
+            "default": "#AAAAAA"
+        },
+        {
+            "type": "range",
+            "id": "name_font_size",
+            "min": 20,
+            "max": 36,
+            "step": 1,
+            "unit": "px",
+            "label": "Product Name Font Size",
+            "default": 28
+        },
+        {
+            "type": "range",
+            "id": "detail_font_size",
+            "min": 10,
+            "max": 14,
+            "step": 1,
+            "unit": "px",
+            "label": "Detail/Vendor Font Size",
+            "default": 12
+        }
+    ],
+    "presets": [
+        {
+            "name": "Custom Product Card"
+        }
+    ]
+}
+{% endschema %}
