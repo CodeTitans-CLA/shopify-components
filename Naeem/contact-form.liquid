@@ -1,0 +1,540 @@
+{% comment %}
+  Shopify Section: Split Contact Form with Customizable Text Block
+  Features a header/description block on the left and a functional Shopify contact form on the right.
+{% endcomment %}
+
+{% style %}
+  /* --- BASE STYLES --- */
+  .contact-split-section-{{ section.id }} {
+    padding: {{ section.settings.padding_top }}px 0 {{ section.settings.padding_bottom }}px 0;
+    background-color: {{ section.settings.section_bg_color }};
+  }
+
+  .contact-split-container {
+    max-width: {{ section.settings.max_width }}px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+  
+  .contact-split-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center; /* Vertically center content */
+    gap: 30px;
+    background-color: {{ section.settings.card_bg_color }};
+    padding: 50px;
+    border-radius: {{ section.settings.card_radius }}px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+  }
+
+  /* --- LEFT CONTENT BLOCK STYLES --- */
+  .contact-split-content {
+    flex: 1 1 45%; /* Takes up 45% of width, allows shrinking */
+    padding-right: 20px;
+  }
+
+  .contact-split-headline {
+    font-size: {{ section.settings.headline_size }}px;
+    font-weight: 700;
+    margin-bottom: 15px;
+    line-height: 1.1;
+    font-family: {{ section.settings.headline_font }};
+    color: {{ section.settings.headline_color }};
+  }
+
+  /* Underline Style */
+  .contact-split-headline span {
+      display: inline-block;
+      padding-bottom: 5px;
+      border-bottom: 3px solid {{ section.settings.underline_color }};
+  }
+
+  .contact-split-description {
+    font-size: {{ section.settings.desc_size }}px;
+    line-height: 1.5;
+    margin-bottom: 30px;
+    font-family: {{ section.settings.desc_font }};
+    color: {{ section.settings.desc_color }};
+  }
+
+  .contact-split-btn {
+    display: inline-block;
+    padding: {{ section.settings.btn_padding_y }}px {{ section.settings.btn_padding_x }}px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 16px;
+    background-color: {{ section.settings.btn_bg_color }};
+    color: {{ section.settings.btn_text_color }};
+    border: 2px solid {{ section.settings.btn_border_color }};
+    border-radius: {{ section.settings.btn_radius }}px;
+    transition: background-color 0.2s, color 0.2s;
+  }
+
+  .contact-split-btn:hover {
+    background-color: {{ section.settings.btn_border_color }};
+    color: {{ section.settings.btn_bg_color }};
+  }
+
+  /* --- RIGHT FORM BLOCK STYLES (Shopify Form) --- */
+  .contact-split-form {
+    flex: 1 1 45%; /* Takes up 45% of width, allows shrinking */
+  }
+
+  .contact-form-row {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 20px;
+  }
+  
+  .contact-form-row > * {
+      flex: 1 1 50%;
+  }
+
+  .contact-split-form input[type="text"],
+  .contact-split-form input[type="email"],
+  .contact-split-form input[type="tel"],
+  .contact-split-form textarea {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid {{ section.settings.field_border_color }};
+    background-color: {{ section.settings.field_bg_color }};
+    color: {{ section.settings.field_text_color }};
+    border-radius: {{ section.settings.field_radius }}px;
+    font-size: 16px;
+    box-sizing: border-box;
+  }
+  
+  .contact-split-form textarea {
+      resize: vertical;
+      min-height: 180px;
+  }
+
+  .contact-form-submit {
+    width: 100%;
+    padding: 15px 20px;
+    background-color: {{ section.settings.submit_bg_color }};
+    color: {{ section.settings.submit_text_color }};
+    border: none;
+    border-radius: {{ section.settings.submit_radius }}px;
+    font-size: 18px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.2s;
+  }
+
+  .contact-form-submit:hover {
+    opacity: 0.9;
+  }
+
+  /* Success/Error Message Styles (Shopify Standard) */
+  {% if form.posted_successfully %}
+    #contact-form-{{ section.id }} { display: none; }
+    .form-success-message {
+      color: green;
+      font-weight: bold;
+      text-align: center;
+      padding: 20px;
+      border: 1px solid green;
+      background-color: #e6ffe6;
+      border-radius: 5px;
+    }
+  {% endif %}
+  
+  .form-error-message {
+    color: red;
+    margin-bottom: 10px;
+  }
+  
+  /* --- MEDIA QUERIES (Responsiveness) --- */
+  @media screen and (max-width: 992px) {
+    .contact-split-wrapper {
+      padding: 30px;
+    }
+    .contact-split-content {
+      flex: 1 1 100%; /* Stack content and form */
+      padding-right: 0;
+      margin-bottom: 20px;
+    }
+    .contact-split-form {
+      flex: 1 1 100%;
+    }
+    .contact-form-row {
+      flex-direction: column; /* Stack fields in mobile */
+      gap: 0;
+    }
+    .contact-form-row > * {
+      margin-bottom: 20px;
+    }
+    .contact-split-headline {
+      font-size: {{ section.settings.headline_size | minus: 5 }}px;
+    }
+  }
+  
+  @media screen and (max-width: 600px) {
+     .contact-split-wrapper {
+      padding: 20px;
+     }
+  }
+
+{% endstyle %}
+
+<section class="contact-split-section-{{ section.id }}">
+  <div class="contact-split-container">
+    <div class="contact-split-wrapper">
+
+      {% comment %} {# --- LEFT: HEADER AND DESCRIPTION --- #} {% endcomment %}
+      <div class="contact-split-content">
+        
+        {% if section.settings.headline != blank %}
+          <h2 class="contact-split-headline">
+            <span>{{ section.settings.headline | escape }}</span>
+          </h2>
+        {% endif %}
+        
+        {% if section.settings.description != blank %}
+          <p class="contact-split-description">{{ section.settings.description | newline_to_br }}</p>
+        {% endif %}
+        
+        {% if section.settings.button_text != blank and section.settings.button_link != blank %}
+          <a href="{{ section.settings.button_link }}" class="contact-split-btn">
+            {{ section.settings.button_text | escape }}
+          </a>
+        {% endif %}
+      </div>
+
+      {% comment %} {# --- RIGHT: CONTACT FORM --- #} {% endcomment %}
+      <div class="contact-split-form">
+        {% form 'contact', id: 'contact-form-' | append: section.id %}
+          
+          {% comment %} Display Form Success/Error {% endcomment %}
+          {% if form.posted_successfully %}
+            <p class="form-success-message">{{ 'shopify.form.contact.success' | t }}</p>
+          {% endif %}
+          
+          {% if form.errors %}
+            <div class="form-error-message">
+              {{ form.errors | default_errors }}
+            </div>
+          {% endif %}
+          
+          <div id="contact-form-{{ section.id }}">
+            
+            {% comment %} {# Name and Phone Row #} {% endcomment %}
+            <div class="contact-form-row">
+              <input type="text" id="ContactFormName-{{ section.id }}" name="contact[name]" 
+                     placeholder="Name" 
+                     value="{% if form.name %}{{ form.name }}{% endif %}">
+              
+              <input type="tel" id="ContactFormPhone-{{ section.id }}" name="contact[phone]" 
+                     placeholder="Phone" 
+                     value="{% if form.phone %}{{ form.phone }}{% endif %}">
+            </div>
+
+            {% comment %} {# Email and Monthly Bill Row #} {% endcomment %}
+            <div class="contact-form-row">
+              <input type="email" id="ContactFormEmail-{{ section.id }}" name="contact[email]" 
+                     placeholder="Email" 
+                     value="{% if form.email %}{{ form.email }}{% endif %}" 
+                     spellcheck="false" 
+                     autocapitalize="off" required>
+              
+              <input type="text" id="ContactFormBill-{{ section.id }}" name="contact[Monthly Energy Bill]" 
+                     placeholder="Monthly Energy Bill" 
+                     value="{% if form.monthly_energy_bill %}{{ form.monthly_energy_bill }}{% endif %}">
+            </div>
+            
+            {% comment %} {# Street Address Field #} {% endcomment %}
+            <div class="contact-form-row">
+              <input type="text" id="ContactFormAddress-{{ section.id }}" name="contact[Street Address]" 
+                     placeholder="Street Address" 
+                     value="{% if form.street_address %}{{ form.street_address }}{% endif %}">
+            </div>
+
+            {% comment %} {# Message Field #} {% endcomment %}
+            <textarea rows="6" id="ContactFormMessage-{{ section.id }}" name="contact[body]" 
+                      placeholder="Message">{% if form.body %}{{ form.body }}{% endif %}</textarea>
+
+            {% comment %} {# Submit Button #} {% endcomment %}
+            <div style="margin-top: 20px;">
+              <button type="submit" class="contact-form-submit">
+                {{ section.settings.submit_button_text | escape }}
+              </button>
+            </div>
+          </div>
+        {% endform %}
+      </div>
+
+    </div>
+  </div>
+</section>
+
+{% comment %}
+  ============================================================
+  SECTION SCHEMA: Defines the customizable options in the Theme Editor
+  ============================================================
+{% endcomment %}
+
+{% schema %}
+{
+  "name": "Contact Form (Split)",
+  "tag": "section",
+  "class": "section-contact-form-split",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Section Layout & Background"
+    },
+    {
+      "type": "range",
+      "id": "max_width",
+      "min": 800,
+      "max": 1400,
+      "step": 50,
+      "unit": "px",
+      "label": "Maximum Section Width",
+      "default": 1200
+    },
+    {
+      "type": "color",
+      "id": "section_bg_color",
+      "label": "Section Background Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "card_bg_color",
+      "label": "Card Background Color (Form/Text Wrap)",
+      "default": "#f9f9f9"
+    },
+    {
+      "type": "range",
+      "id": "card_radius",
+      "min": 0,
+      "max": 30,
+      "step": 1,
+      "unit": "px",
+      "label": "Card Corner Radius",
+      "default": 10
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "label": "Padding Top",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "label": "Padding Bottom",
+      "default": 60
+    },
+    {
+      "type": "header",
+      "content": "Left Content Block"
+    },
+    {
+      "type": "textarea",
+      "id": "headline",
+      "label": "Headline Text",
+      "default": "CONTACT US TODAY FOR A FREE CONSULTATION"
+    },
+    {
+      "type": "textarea",
+      "id": "description",
+      "label": "Description Text",
+      "default": "We are Vancouver's solar experts, and we're ready to help you with your solar installation. We'll answer any questions you have and provide you with information so that you can make the best decision for you."
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Button Text (Optional)",
+      "default": "Contact Us Now"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button Link"
+    },
+    {
+      "type": "header",
+      "content": "Left Content Typography"
+    },
+    {
+      "type": "text",
+      "id": "headline_font",
+      "label": "Headline Font Family",
+      "default": "sans-serif"
+    },
+    {
+      "type": "range",
+      "id": "headline_size",
+      "min": 30,
+      "max": 60,
+      "step": 2,
+      "unit": "px",
+      "label": "Headline Font Size",
+      "default": 42
+    },
+    {
+      "type": "color",
+      "id": "headline_color",
+      "label": "Headline Color",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "underline_color",
+      "label": "Headline Underline Color",
+      "default": "#ff9900"
+    },
+    {
+      "type": "text",
+      "id": "desc_font",
+      "label": "Description Font Family",
+      "default": "sans-serif"
+    },
+    {
+      "type": "range",
+      "id": "desc_size",
+      "min": 14,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "label": "Description Font Size",
+      "default": 16
+    },
+    {
+      "type": "color",
+      "id": "desc_color",
+      "label": "Description Color",
+      "default": "#555555"
+    },
+    {
+      "type": "header",
+      "content": "Button Customization"
+    },
+    {
+      "type": "range",
+      "id": "btn_padding_y",
+      "min": 5,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "label": "Button Padding Vertical",
+      "default": 10
+    },
+    {
+      "type": "range",
+      "id": "btn_padding_x",
+      "min": 10,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "label": "Button Padding Horizontal",
+      "default": 20
+    },
+    {
+      "type": "color",
+      "id": "btn_bg_color",
+      "label": "Button Background Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "btn_text_color",
+      "label": "Button Text Color",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "btn_border_color",
+      "label": "Button Border Color",
+      "default": "#000000"
+    },
+    {
+      "type": "range",
+      "id": "btn_radius",
+      "min": 0,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "label": "Button Corner Radius",
+      "default": 4
+    },
+    {
+      "type": "header",
+      "content": "Form Customization"
+    },
+    {
+      "type": "text",
+      "id": "submit_button_text",
+      "label": "Submit Button Text",
+      "default": "Submit"
+    },
+    {
+      "type": "color",
+      "id": "submit_bg_color",
+      "label": "Submit Button Background Color",
+      "default": "#000080"
+    },
+    {
+      "type": "color",
+      "id": "submit_text_color",
+      "label": "Submit Button Text Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "submit_radius",
+      "min": 0,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "label": "Submit Button Corner Radius",
+      "default": 4
+    },
+    {
+      "type": "color",
+      "id": "field_bg_color",
+      "label": "Form Field Background Color",
+      "default": "#eeeeee"
+    },
+    {
+      "type": "color",
+      "id": "field_text_color",
+      "label": "Form Field Text Color",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "field_border_color",
+      "label": "Form Field Border Color",
+      "default": "#dddddd"
+    },
+    {
+      "type": "range",
+      "id": "field_radius",
+      "min": 0,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "label": "Form Field Corner Radius",
+      "default": 4
+    }
+  ],
+  "presets": [
+    {
+      "name": "Contact Form (Split)",
+      "category": "Forms"
+    }
+  ]
+}
+{% endschema %}

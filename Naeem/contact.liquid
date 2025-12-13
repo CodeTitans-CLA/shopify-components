@@ -1,0 +1,671 @@
+{%- liquid 
+  assign st = section.settings
+
+  assign animation_effect = settings.animations
+  assign animated = false
+  if animation_effect != 'none'
+    assign animated = true
+    if section.settings.animations != 'inherit'
+      assign animation_effect = section.settings.animations
+    endif
+  endif
+
+  assign container = section.settings.container
+  if container == 'w-full'
+    assign container = 'container-full'
+  endif
+-%}
+<section data-section-type="contact-page" data-section-id="{{ section.id }}" class="m-section m-contact-page">
+  <div class="{{ container }} ">
+    <div class="m-row{% if animated %} m-scroll-trigger animate--{{ animation_effect }}{% endif %}">
+      <!-- LEFT (FORM) -->
+      <div class="m-contact-form__main-wrapper xl:m:w-7/12 m:w-full">
+        <div class="m-contact-form__main">
+          {% if st.title != blank %}
+            <h3 class="m-contact-form__heading">{{ st.title }}</h3>
+          {% endif %}
+          {% if st.description != blank %}
+            <div class="m-contact-form__description">{{ st.description }}</div>
+          {% endif %}
+
+          {% form 'contact' %}
+            {% capture success_message %}
+              {{ 'contact.form.post_success' | t }}
+            {% endcapture %}
+            {% render 'form__success', form: form, success_message: success_message %}
+            {% render 'form__error', form: form %}
+
+            <div class="m-contact-form__form-fields m:flex m:flex-wrap">
+              {% if section.settings.show_name %}
+              <div class="m-contact-form__name m:column m:w-full md:m:w-1/2">
+                <input type="text"
+                  class="form-field form-field--input"
+                  name="contact[name]"
+                  id="inputName"
+                  value="{% if form.name %}{{ form.name }}{% elsif customer %}{{ customer.name }}{% endif %}"
+                  placeholder="{{ 'contact.form.name' | t }}">
+              </div>
+              {% endif %}
+
+              <div class="m-contact-form__email m:column m:w-full md:m:w-1/2">
+                <input type="email"
+                  class="form-field form-field--input"
+                  name="contact[email]"
+                  id="inputEmail"
+                  required
+                  autocorrect="off"
+                  autocapitalize="off"
+                  value="{% if form.email %}{{ form.email }}{% elsif customer %}{{ customer.email }}{% endif %}"
+                  placeholder="{{ 'contact.form.email' | t }}">
+              </div>
+
+              {% if section.settings.show_phone %}
+              <div class="m-contact-form__phone m:column m:w-full">
+                <input type="tel"
+                  class="form-field form-field--input"
+                  name="contact[phone]"
+                  id="inputPhone"
+                  autocorrect="off"
+                  autocapitalize="off"
+                  value="{% if form.phone %}{{ form.phone }}{% elsif customer %}{{ customer.phone }}{% endif %}"
+                  placeholder="{{ 'contact.form.phone' | t }}">
+              </div>
+              {% endif %}
+            </div>
+
+            <div class="m-contact-form__message m:w-full">
+              <textarea class="form-field form-field--input"
+                name="contact[body]"
+                id="textareaMessage"
+                rows="6"
+                required
+                placeholder="{{ 'contact.form.message' | t }}">{% if form.body %}{{ form.body }}{% endif %}</textarea>
+            </div>
+
+            {% if section.settings.show_signup_email %}
+            <div class="m-contact-form__save">
+              <label class="form-field--checkbox">
+                <input type="checkbox" name="contact[saveInfo]">
+                <span class="form-field--checkbox__label">Enregistrer mes informations pour la prochaine fois</span>
+              </label>
+            </div>
+            {% endif %}
+
+            <div class="m-contact-form__actions">
+              <button type="submit" class="m-button m-button--primary m-contact-btn">
+                {{ 'contact.form.send' | t }}
+              </button>
+            </div>
+          {% endform %}
+        </div>
+      </div>
+
+      <!-- RIGHT (INFO BLOCKS) -->
+      <div class="m-contact-form__info-wrapper xl:m:w-5/12 m:w-full">
+        <div class="m-contact-form__info-grid">
+
+          <!-- static company details -->
+          <div class="m-contact-info-card">
+            <h4>Nom de l’entreprise :</h4>
+            <div class="m-contact-info-card__content">
+              <p><strong>Liftgravity</strong></p>
+            </div>
+          </div>
+
+          <div class="m-contact-info-card">
+            <h4>Adresse complète :</h4>
+            <div class="m-contact-info-card__content">
+              <p>Sint-Pieters-Leeuw, Belgium</p>
+            </div>
+          </div>
+
+          <div class="m-contact-info-card">
+            <h4>Customer support :</h4>
+            <div class="m-contact-info-card__content">
+              <p><a href="mailto:contact@liftgravity.com">contact@liftgravity.com</a></p>
+            </div>
+          </div>
+
+          {%- comment -%}
+            Dynamic blocks from editor
+            We’ll make second "info_box" different so they don’t duplicate.
+          {%- endcomment -%}
+          {% assign info_index = 0 %}
+          {% for block in section.blocks %}
+            {% case block.type %}
+              {% when 'info_box' %}
+                {% assign info_index = info_index | plus: 1 %}
+                <div class="m-contact-info-card" {{ block.shopify_attributes }}>
+                  {% if info_index == 2 %}
+                    <!-- Force different content for 2nd info box -->
+                    <h4>Heures d'ouverture</h4>
+                    <div class="m-contact-info-card__content">
+                      <p>Mon – Fri: 9:00 – 18:00<br>Sat: 10:00 – 14:00</p>
+                    </div>
+                  {% else %}
+                    {% if block.settings.title != blank %}
+                      <h4>{{ block.settings.title }}</h4>
+                    {% endif %}
+                    {% if block.settings.content != blank %}
+                      <div class="m-contact-info-card__content">{{ block.settings.content }}</div>
+                    {% endif %}
+                  {% endif %}
+                </div>
+              {% when 'social_links' %}
+                {% comment %} <div class="m-contact-info-card" {{ block.shopify_attributes }}>
+                  {% if block.settings.title != blank %}
+                    <h4>{{ block.settings.title }}</h4>
+                  {% endif %}
+                  <div class="m-contact-info-card__content">
+                    <p>Follow us on social media.</p>
+                  </div>
+                </div> {% endcomment %}
+              {% when 'faq_item' %}
+                <div class="m-contact-info-card" {{ block.shopify_attributes }}>
+                  {% if block.settings.question != blank %}
+                    <h4>{{ block.settings.question }}</h4>
+                  {% endif %}
+                  {% if block.settings.answer != blank %}
+                    <div class="m-contact-info-card__content">
+                      <p>{{ block.settings.answer }}</p>
+                    </div>
+                  {% endif %}
+                </div>
+              {% when 'map_block' %}
+                <div class="m-contact-map" {{ block.shopify_attributes }}>
+                  {% if block.settings.title != blank %}
+                    <h4>{{ block.settings.title }}</h4>
+                  {% endif %}
+                  {% if block.settings.map_iframe != blank %}
+                    {{ block.settings.map_iframe }}
+                  {% endif %}
+                </div>
+              {% else %}
+            {% endcase %}
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+
+    {% if section.settings.show_bottom_text %}
+      <div class="m-contact-bottom-note">
+        {{ section.settings.bottom_text }}
+      </div>
+    {% endif %}
+  </div>
+
+  <style>
+    /* =============== CONTACT PAGE LAYOUT =============== */
+    .m-section.m-contact-page {
+      display: flex;
+      justify-content: center;
+      padding: 60px 15px;
+      background: #f7f5f3;
+    }
+    .m-section.m-contact-page > .container,
+    .m-section.m-contact-page > .container-fluid,
+    .m-section.m-contact-page > .container-full {
+      max-width: 1180px;
+      margin: 0 auto;
+    }
+    .m-contact-page .m-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 32px;
+      align-items: flex-start;
+      justify-content: center;
+    }
+    @media (min-width: 1024px) {
+      .m-contact-page .m-row {
+        gap: 42px;
+      }
+    }
+
+    /* =============== FORM CARD =============== */
+    .m-contact-form__main {
+      background: #fff;
+      border-radius: 14px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05);
+      padding: 36px 32px;
+      transition: all 0.25s ease;
+      width: 100%;
+      max-width: 720px;
+    }
+    .m-contact-form__main:hover {
+      box-shadow: 0 24px 46px rgba(0, 0, 0, 0.08);
+      transform: translateY(-2px);
+    }
+
+    .m-contact-form__heading {
+      margin-bottom: 10px;
+      font-weight: 700;
+      font-size: 1.45rem;
+      line-height: 1.2;
+    }
+    .m-contact-form__description {
+      margin-bottom: 22px;
+      color: rgba(0, 0, 0, 0.65);
+      font-size: 15px;
+      line-height: 1.6;
+      font-weight: 400;
+    }
+
+    .m-contact-form__name,
+    .m-contact-form__email,
+    .m-contact-form__phone,
+    .m-contact-form__message {
+      margin-bottom: 14px;
+    }
+
+    .m-contact-form .form-field.form-field--input,
+    .m-contact-form textarea.form-field--input {
+      width: 100%;
+      background: #fff;
+      border: 1px solid rgba(0, 0, 0, 0.08);
+      border-radius: 10px;
+      padding: 12px 14px;
+      line-height: 1.4;
+      transition: border 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+      outline: none;
+      display: block;
+      font-weight: 400;
+    }
+    .m-contact-form__message textarea {
+      min-height: 160px;
+      resize: vertical;
+    }
+    .m-contact-form .form-field.form-field--input:focus,
+    .m-contact-form textarea.form-field--input:focus {
+      border-color: #5B3A29;
+      background: #fff;
+      box-shadow: 0 0 0 3px rgba(91, 58, 41, 0.12);
+    }
+    .m-contact-form .form-field.form-field--input::placeholder,
+    .m-contact-form textarea.form-field--input::placeholder {
+      color: rgba(0, 0, 0, 0.35);
+      font-size: 0.92rem;
+    }
+
+    .m-contact-form__save {
+      margin-top: 10px;
+    }
+    .form-field--checkbox {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      position: relative;
+    }
+    .form-field--checkbox input[type="checkbox"] {
+      all: unset;
+      appearance: none;
+      -webkit-appearance: none;
+      width: 18px;
+      height: 18px;
+      border: 2px solid #5B3A29;
+      border-radius: 4px;
+      background-color: #fff;
+      display: inline-block;
+      position: relative;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: all 0.2s ease;
+    }
+    .form-field--checkbox input[type="checkbox"]:hover {
+      box-shadow: 0 0 0 3px rgba(91, 58, 41, 0.12);
+    }
+    .form-field--checkbox input[type="checkbox"]:checked {
+      background-color: #5B3A29;
+      border-color: #5B3A29;
+    }
+    .form-field--checkbox input[type="checkbox"]:checked::after {
+      content: "";
+      position: absolute;
+      left: 5px;
+      top: 2px;
+      width: 4px;
+      height: 9px;
+      border: solid #fff;
+      border-width: 0 2px 2px 0;
+      transform: rotate(45deg);
+    }
+    .form-field--checkbox__label {
+      font-size: 0.9rem;
+      color: rgba(0, 0, 0, 0.75);
+      line-height: 1.4;
+    }
+
+    @media (min-width: 768px) {
+      .m-contact-form__name {
+        padding-right: 8px;
+      }
+      .m-contact-form__email {
+        padding-left: 8px;
+      }
+    }
+
+    @media (max-width: 767px) {
+      .m-contact-form__form-fields {
+        gap: 12px;
+      }
+      .m-contact-form__name,
+      .m-contact-form__email {
+        padding: 0;
+      }
+      .m-contact-form__heading {
+        font-size: 1.25rem;
+      }
+      .m-contact-form__description {
+        font-size: 0.88rem;
+      }
+      .form-field--checkbox {
+        align-items: flex-start;
+      }
+    }
+
+    /* =============== BUTTON CENTER + BRAND COLOR =============== */
+    .m-contact-form__actions {
+      display: flex;
+      justify-content: center;
+      margin-top: 1.5rem;
+    }
+    .m-contact-page .m-contact-btn,
+    .m-contact-page .m-button.m-button--primary {
+      background-color: #5B3A29;
+      border-color: #5B3A29;
+      min-width: 180px;
+      text-align: center;
+      border-radius: 9999px;
+      transition: all 0.25s ease;
+      font-weight: 500;
+      font-size: 0.95rem;
+      padding: 11px 26px;
+      color: #fff;
+    }
+    .m-contact-page .m-contact-btn:hover,
+    .m-contact-page .m-button.m-button--primary:hover {
+      background-color: #E3B505;
+      border-color: #E3B505;
+      color: #000;
+      transform: translateY(-1px);
+      box-shadow: 0 12px 30px rgba(227, 181, 5, 0.35);
+    }
+
+    @media (max-width: 575px) {
+      .m-contact-page .m-contact-btn,
+      .m-contact-page .m-button.m-button--primary {
+        width: 100%;
+        max-width: 250px;
+        min-width: auto;
+      }
+    }
+
+    /* =============== RIGHT SIDE CARDS =============== */
+    .m-contact-form__info-wrapper {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      width: 100%;
+      max-width: 380px;
+    }
+    .m-contact-form__info-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .m-contact-info-card,
+    .m-contact-map {
+      background: #fff;
+      border-radius: 12px;
+      padding: 16px 18px 14px;
+      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.03);
+      border: 1px solid rgba(0, 0, 0, 0.01);
+      transition: all 0.25s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    .m-contact-info-card:hover,
+    .m-contact-map:hover {
+      box-shadow: 0 20px 48px rgba(0, 0, 0, 0.06);
+      transform: translateY(-2px);
+      background: rgba(91, 58, 41, 0.035);
+      border-color: rgba(91, 58, 41, 0.08);
+    }
+    .m-contact-info-card h4 {
+      margin-bottom: 6px;
+      font-weight: 600;
+      color: #5B3A29;
+      font-size: 16px;
+    }
+    .m-contact-info-card__content p {
+      margin: 0;
+      color: rgba(0,0,0,0.7);
+      font-size: 14px;
+      line-height: 1.5;
+      font-weight: 400;
+    }
+    .m-contact-info-card__content a {
+      color: #5B3A29;
+      text-decoration: none;
+    }
+    .m-contact-info-card__content a:hover {
+      text-decoration: underline;
+    }
+
+    .m-contact-map iframe {
+      width: 100%;
+      min-height: 220px;
+      border: 0;
+      border-radius: 10px;
+    }
+
+    .m-contact-bottom-note {
+      text-align: center;
+      margin-top: 30px;
+      color: rgba(0, 0, 0, 0.55);
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    @media (max-width: 991px) {
+      .m-contact-page .m-row {
+        flex-direction: column;
+        align-items: center;
+      }
+      .m-contact-form__main {
+        width: 100%;
+        max-width: 720px;
+      }
+      .m-contact-form__info-wrapper {
+        max-width: 720px;
+        width: 100%;
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 16px;
+      }
+      .m-contact-form__info-grid {
+        width: 100%;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+        gap: 16px;
+      }
+    }
+
+    @media (max-width: 575px) {
+      .m-section.m-contact-page {
+        padding: 40px 12px;
+      }
+      .m-contact-form__main {
+        padding: 24px 16px;
+      }
+      .m-contact-form__info-grid {
+        grid-template-columns: 1fr;
+      }
+      .m-contact-form__info-wrapper {
+        flex-direction: column;
+      }
+      .m-contact-info-card h4 {
+        font-size: 0.9rem;
+      }
+      .m-contact-info-card__content p {
+        font-size: 0.82rem;
+      }
+      .m-contact-bottom-note {
+        font-size: 0.78rem;
+      }
+    }
+  </style>
+</section>
+
+{% schema %}
+{
+  "name": "Contact (Pro)",
+  "settings": [
+    {
+      "type": "select",
+      "id": "container",
+      "label": "Container type",
+      "default": "container-fluid",
+      "options": [
+        { "value": "container-fluid", "label": "Default" },
+        { "value": "w-full", "label": "Full width" },
+        { "value": "container", "label": "Use container box" }
+      ]
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "We would love to hear from you."
+    },
+    {
+      "type": "richtext",
+      "id": "description",
+      "label": "Description",
+      "default": "<p>If you have any questions about your order, shipping or wholesale — send us a message.</p>"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_name",
+      "label": "Show name field",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_phone",
+      "label": "Show phone field",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "show_signup_email",
+      "label": "Show save info checkbox",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_bottom_text",
+      "label": "Show bottom note",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "bottom_text",
+      "label": "Bottom note text",
+      "default": "We usually reply within 24 hours (Mon–Fri)."
+    },
+    {
+      "type": "select",
+      "id": "animations",
+      "label": "Visible in the view animation",
+      "default": "inherit",
+      "options": [
+        { "value": "inherit", "label": "Inherit global setting" },
+        { "value": "fade-in", "label": "Fade in" },
+        { "value": "fade-in-up", "label": "Fade in up" },
+        { "value": "fade-in-left", "label": "Fade in left" },
+        { "value": "fade-in-right", "label": "Fade in right" }
+      ]
+    }
+  ],
+  "blocks": [
+    {
+      "type": "info_box",
+      "name": "Info box",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Service client"
+        },
+        {
+          "type": "richtext",
+          "id": "content",
+          "label": "Content",
+          "default": "<p>Email: support@example.com<br/>Phone: +1 (555) 123-456</p>"
+        }
+      ]
+    },
+    {
+      "type": "social_links",
+      "name": "Social links",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Follow us"
+        }
+      ]
+    },
+    {
+      "type": "faq_item",
+      "name": "FAQ item",
+      "settings": [
+        {
+          "type": "text",
+          "id": "question",
+          "label": "Question",
+          "default": "How long does shipping take?"
+        },
+        {
+          "type": "textarea",
+          "id": "answer",
+          "label": "Answer",
+          "default": "We process orders in 1–2 business days. Delivery time depends on your location."
+        }
+      ]
+    },
+    {
+      "type": "map_block",
+      "name": "Map block",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Visit our showroom"
+        },
+        {
+          "type": "textarea",
+          "id": "map_iframe",
+          "label": "Google map iframe",
+          "default": "<iframe src='https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3151.8354345093746!2d144.95373531531693!3d-37.81627974202111!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMzfCsDQ5JzAwLjYiUyAxNDTCsDU3JzE0LjQiRQ!5e0!3m2!1sen!2sau!4v1615340123456' loading='lazy'></iframe>"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Contact (Pro)",
+      "blocks": [
+        { "type": "info_box" },
+        { "type": "info_box" },
+        { "type": "map_block" }
+      ]
+    }
+  ]
+}
+{% endschema %}
