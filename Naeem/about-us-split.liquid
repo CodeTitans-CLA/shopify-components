@@ -1,0 +1,489 @@
+{% comment %}
+  Shopify Section: About Us Split Content with Dynamic Image Height
+  This section creates a 50/50 split layout where the text content features a 'Read More'
+  toggle, and the image dynamically resizes to match the content height.
+{% endcomment %}
+
+{% style %}
+  /* --- CUSTOM STYLES --- */
+  .about-split-{{ section.id }} {
+    padding: {{ section.settings.padding_top }}px 0 {{ section.settings.padding_bottom }}px 0;
+    background-color: {{ section.settings.section_bg_color }};
+  }
+
+  .about-split-container {
+    max-width: {{ section.settings.max_width }}px;
+    margin: 0 auto;
+    padding: 0 20px;
+    display: flex;
+    flex-direction: column; /* Stack on mobile */
+    gap: 30px;
+  }
+
+  /* Desktop 50/50 Layout */
+  @media screen and (min-width: 992px) {
+    .about-split-container {
+      flex-direction: row;
+      align-items: flex-start; /* Important for alignment before sync */
+    }
+  }
+
+  /* --- LEFT SIDE: IMAGE CONTAINER --- */
+  .about-split-image-col {
+    width: 100%;
+    /* Use a fixed aspect ratio or height on mobile */
+    min-height: 250px; 
+    transition: height 0.5s ease-in-out; /* Smooth transition for height changes */
+  }
+
+  @media screen and (min-width: 992px) {
+    .about-split-image-col {
+      width: 50%;
+      min-height: 400px; /* Min height on desktop */
+    }
+  }
+
+  .about-split-image-col img {
+    width: 100%;
+    height: 100%; /* Fill the container's height */
+    object-fit: cover;
+    display: block;
+    border-radius: {{ section.settings.image_radius }}px;
+  }
+
+  /* --- RIGHT SIDE: CONTENT CONTAINER --- */
+  .about-split-content-col {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  @media screen and (min-width: 992px) {
+    .about-split-content-col {
+      width: 50%;
+      padding-left: 50px; /* Add some spacing between image and text */
+    }
+  }
+
+  /* Headline Styling */
+  .about-split-headline {
+    font-size: {{ section.settings.headline_size }}px;
+    font-weight: bold;
+    margin-bottom: 15px;
+    font-family: {{ section.settings.headline_font }};
+    color: {{ section.settings.headline_color }};
+    text-transform: uppercase;
+  }
+  
+  /* Underline Style for Headline */
+  .about-split-headline span {
+      display: inline-block;
+      padding-bottom: 5px;
+      border-bottom: 3px solid {{ section.settings.underline_color }};
+  }
+
+  /* Content Wrapper for Read More */
+  .about-split-text-wrap {
+    overflow: hidden;
+    transition: max-height 0.5s ease-in-out; /* Smooth transition for text expansion */
+    line-height: {{ section.settings.text_line_height }};
+    font-family: {{ section.settings.text_font }};
+    font-size: {{ section.settings.text_size }}px;
+    color: {{ section.settings.text_color }};
+    margin-bottom: 15px;
+  }
+  
+  .about-split-text-wrap p {
+      margin-bottom: 1.5em; /* Spacing between paragraphs */
+  }
+
+  /* Read More/Less Button */
+  .about-split-read-toggle {
+    display: inline-block;
+    cursor: pointer;
+    font-size: {{ section.settings.text_size }}px;
+    font-weight: 600;
+    color: {{ section.settings.toggle_color }};
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .about-split-read-toggle:hover {
+    color: {{ section.settings.toggle_color | color_modify: 'alpha', 0.8 }};
+  }
+
+  /* --- Optional: Content on Left (Reverse Order) --- */
+  {% if section.settings.content_position == 'left' %}
+    @media screen and (min-width: 992px) {
+      .about-split-container {
+        flex-direction: row-reverse;
+      }
+      .about-split-content-col {
+        padding-left: 0;
+        padding-right: 50px;
+      }
+    }
+  {% endif %}
+
+{% endstyle %}
+
+
+<section class="about-split-{{ section.id }}">
+  <div class="about-split-container" id="about-split-{{ section.id }}">
+
+    {% comment %} {# IMAGE COLUMN (LEFT/RIGHT) #} {% endcomment %}
+    <div class="about-split-image-col" data-image-col>
+      {% if section.settings.image != blank %}
+        {% assign img = section.settings.image %}
+        <img src="{{ img | img_url: '1200x' }}"
+             alt="{{ img.alt | default: section.settings.headline | escape }}"
+             loading="lazy">
+      {% else %}
+        {% comment %} Placeholder for Theme Editor preview {% endcomment %}
+        <div style="width: 100%; height: 100%; background-color: #f0f0f0; border-radius: {{ section.settings.image_radius }}px; display: flex; align-items: center; justify-content: center;">
+          <p style="text-align: center; color: #999;">Image Placeholder</p>
+        </div>
+      {% endif %}
+    </div>
+
+    {% comment %} {# CONTENT COLUMN (RIGHT/LEFT) #} {% endcomment %}
+    <div class="about-split-content-col" data-content-col>
+      
+      {% if section.settings.headline != blank %}
+        <h2 class="about-split-headline"><span>{{ section.settings.headline | escape }}</span></h2>
+      {% endif %}
+
+      <div class="about-split-text-wrap" data-text-wrap>
+        <p>{{ section.settings.short_description | newline_to_br }}</p>
+        
+        {% if section.settings.full_description != blank %}
+          {% comment %} {# Hidden content that expands #} {% endcomment %}
+          <div data-expanded-content style="display: none;">
+            {{ section.settings.full_description | newline_to_br }}
+          </div>
+        {% endif %}
+      </div>
+
+      {% if section.settings.full_description != blank %}
+        <span class="about-split-read-toggle" data-read-toggle>Read More</span>
+      {% endif %}
+
+    </div>
+  </div>
+</section>
+
+{% comment %}
+  ============================================================
+  JAVASCRIPT: Handles dynamic height synchronization
+  ============================================================
+{% endcomment %}
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const section = document.getElementById('about-split-{{ section.id }}');
+    if (!section) return;
+
+    const contentCol = section.querySelector('[data-content-col]');
+    const imageCol = section.querySelector('[data-image-col]');
+    const textWrap = section.querySelector('[data-text-wrap]');
+    const expandedContent = section.querySelector('[data-expanded-content]');
+    const toggle = section.querySelector('[data-read-toggle]');
+    
+    if (!contentCol || !imageCol || !textWrap || !toggle) return;
+
+    // Settings from Liquid
+    const MAX_HEIGHT_LINES = {{ section.settings.max_height_lines }};
+    const TEXT_LINE_HEIGHT = parseFloat('{{ section.settings.text_line_height }}');
+    const FONT_SIZE = parseFloat('{{ section.settings.text_size }}');
+    
+    let isExpanded = false;
+
+    // 1. Calculate the initial/collapsed height for the content wrapper
+    function calculateCollapsedHeight() {
+      // Use the calculated line-height based on font-size and line-height setting
+      const singleLineHeight = TEXT_LINE_HEIGHT * FONT_SIZE; 
+      
+      // Measure the height of the short description paragraph
+      const shortDescHeight = textWrap.querySelector('p').offsetHeight;
+      
+      // Calculate the minimum height based on lines, but use shortDescHeight if it's smaller
+      const minHeight = Math.min(shortDescHeight, MAX_HEIGHT_LINES * singleLineHeight);
+      
+      return minHeight;
+    }
+
+    // 2. Synchronize image height to content column height
+    function syncImageHeight() {
+      if (window.innerWidth < 992) {
+        // Disable sync on mobile (stacking)
+        imageCol.style.height = 'auto'; 
+        return;
+      }
+      
+      // Use a slight delay to let the text transition complete
+      setTimeout(() => {
+        // Get the total required height of the content column
+        const contentHeight = contentCol.offsetHeight; 
+        
+        // Apply that height to the image column
+        imageCol.style.height = `${contentHeight}px`;
+      }, 500); // Wait for CSS max-height transition (0.5s)
+    }
+
+    // 3. Toggle behavior for "Read More/Less"
+    function toggleContentExpand() {
+      if (!isExpanded) {
+        // EXPAND:
+        const fullContent = expandedContent.innerHTML;
+        textWrap.innerHTML += fullContent; // Append the full text
+        
+        // Now calculate the full scroll height of the *entire* text content
+        const totalTextHeight = textWrap.scrollHeight;
+        textWrap.style.maxHeight = `${totalTextHeight}px`; // Expand content
+        
+        toggle.textContent = 'Read Less';
+        isExpanded = true;
+      } else {
+        // COLLAPSE:
+        // Revert the text content to only the short description
+        textWrap.innerHTML = textWrap.querySelector('p').outerHTML;
+        
+        const collapsedHeight = calculateCollapsedHeight();
+        textWrap.style.maxHeight = `${collapsedHeight}px`; // Collapse content
+        
+        toggle.textContent = 'Read More';
+        isExpanded = false;
+      }
+      
+      // Always re-sync the image height after content change
+      syncImageHeight();
+    }
+    
+    // --- Initial Setup ---
+    
+    // 4. Initial content setup
+    if (expandedContent) {
+      // Calculate initial height and set max-height
+      const initialCollapsedHeight = calculateCollapsedHeight();
+      textWrap.style.maxHeight = `${initialCollapsedHeight}px`;
+      
+      // Attach click handler to toggle
+      toggle.addEventListener('click', toggleContentExpand);
+
+      // Initial image sync (after a small delay to ensure all CSS renders)
+      setTimeout(syncImageHeight, 100);
+    } else {
+        // Hide toggle if there is no expanded content
+        toggle.style.display = 'none';
+        imageCol.style.height = contentCol.offsetHeight + 'px'; // Final sync if no toggle
+    }
+
+
+    // 5. Re-sync heights on window resize
+    let resizeTimer;
+    window.addEventListener('resize', () => {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(syncImageHeight, 200);
+    });
+
+  });
+</script>
+
+
+{% comment %}
+  ============================================================
+  SECTION SCHEMA: Defines the customizable options in the Theme Editor
+  ============================================================
+{% endcomment %}
+
+{% schema %}
+{
+  "name": "About Us Split Content",
+  "tag": "section",
+  "class": "section-about-us-split",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Content & Layout"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Section Image (Left Side Default)"
+    },
+    {
+      "type": "text",
+      "id": "headline",
+      "label": "Headline Title",
+      "default": "ABOUT US"
+    },
+    {
+      "type": "textarea",
+      "id": "short_description",
+      "label": "Visible Description Text",
+      "default": "Coquitlam Solar Energy is a home solar, commercial, and industrial solar installation company serving as a premier installer for all your solar requirements. We have provided the highest level of service to our clients in the Coquitlam and the surrounding area."
+    },
+    {
+      "type": "textarea",
+      "id": "full_description",
+      "label": "Expanded Description Text (After Read More)",
+      "info": "Leave blank to disable 'Read More' functionality.",
+      "default": "Our team of experts is able to assist you with any solar-powered installs that you require, no matter the complexity. Coquitlam Solar Energy offers a wide range of solar-powered systems in BC, including grid-tied, grid-tied with battery backup, and off-grid options. Once you have chosen the right system for your needs, our solar energy company will design and expertly install solar panels directly on your property."
+    },
+    {
+      "type": "select",
+      "id": "content_position",
+      "label": "Content Position",
+      "options": [
+        { "value": "right", "label": "Text on Right (Default)" },
+        { "value": "left", "label": "Text on Left" }
+      ],
+      "default": "right"
+    },
+    {
+      "type": "header",
+      "content": "Design & Customization"
+    },
+    {
+      "type": "range",
+      "id": "max_width",
+      "min": 800,
+      "max": 1400,
+      "step": 50,
+      "unit": "px",
+      "label": "Maximum content width",
+      "default": 1200
+    },
+    {
+      "type": "range",
+      "id": "image_radius",
+      "min": 0,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "label": "Image Corner Radius",
+      "default": 5
+    },
+    {
+      "type": "range",
+      "id": "max_height_lines",
+      "min": 2,
+      "max": 10,
+      "step": 1,
+      "label": "Visible lines before 'Read More'",
+      "default": 5,
+      "info": "Used to calculate the initial collapsed height."
+    },
+    {
+      "type": "color",
+      "id": "section_bg_color",
+      "label": "Section Background Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "header",
+      "content": "Headline Text Controls"
+    },
+    {
+      "type": "text",
+      "id": "headline_font",
+      "label": "Headline Font Family",
+      "default": "sans-serif"
+    },
+    {
+      "type": "range",
+      "id": "headline_size",
+      "min": 24,
+      "max": 48,
+      "step": 2,
+      "unit": "px",
+      "label": "Headline Font Size",
+      "default": 36
+    },
+    {
+      "type": "color",
+      "id": "headline_color",
+      "label": "Headline Color",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "underline_color",
+      "label": "Headline Underline Color",
+      "default": "#ff9900"
+    },
+    {
+      "type": "header",
+      "content": "Description Text Controls"
+    },
+    {
+      "type": "text",
+      "id": "text_font",
+      "label": "Description Font Family",
+      "default": "sans-serif"
+    },
+    {
+      "type": "range",
+      "id": "text_size",
+      "min": 14,
+      "max": 22,
+      "step": 1,
+      "unit": "px",
+      "label": "Description Font Size",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "text_line_height",
+      "min": 1.2,
+      "max": 2.0,
+      "step": 0.1,
+      "label": "Description Line Height",
+      "default": 1.6
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Description Text Color",
+      "default": "#333333"
+    },
+    {
+      "type": "color",
+      "id": "toggle_color",
+      "label": "'Read More/Less' Link Color",
+      "default": "#008000"
+    },
+    {
+      "type": "header",
+      "content": "Section Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "label": "Padding Top",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "label": "Padding Bottom",
+      "default": 60
+    }
+  ],
+  "presets": [
+    {
+      "name": "About Us Split Content (Dynamic)",
+      "category": "Text & Image"
+    }
+  ]
+}
+{% endschema %}

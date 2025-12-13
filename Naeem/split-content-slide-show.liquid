@@ -1,0 +1,684 @@
+{% comment %}
+  Shopify Section: Split Content Slideshow (Updated with Accordion and Pagination Control)
+{% endcomment %}
+
+{% style %}
+  /* --- CUSTOM STYLES --- */
+  .split-slideshow-{{ section.id }} {
+    /* Section-level styling can go here */
+    padding: {{ section.settings.padding_top }}px 0 {{ section.settings.padding_bottom }}px 0;
+    background-color: {{ section.settings.section_bg_color }};
+  }
+
+  .split-slideshow-container {
+    max-width: {{ section.settings.max_width }}px;
+    margin: 0 auto;
+    overflow: hidden; /* Important for the carousel functionality */
+  }
+
+  /* Core Slide Wrapper */
+  .split-slide-wrapper {
+    display: flex;
+    transition: transform 0.5s ease-in-out;
+  }
+
+  /* Individual Slide Styling */
+  .split-slide {
+    flex-shrink: 0;
+    width: 100%;
+    display: flex;
+    flex-direction: column; /* Default stack on mobile */
+    align-items: center;
+    min-height: 400px;
+    background-color: {{ section.settings.slide_bg_color }}; /* Default slide color */
+  }
+
+  /* Desktop/Tablet 50/50 Layout */
+  @media screen and (min-width: 768px) {
+    .split-slide {
+      flex-direction: row;
+    }
+  }
+
+  /* Content Columns */
+  .split-slide-content,
+  .split-slide-image {
+    width: 100%;
+    /* Default spacing for mobile */
+    padding: 20px;
+  }
+  @media screen and (min-width: 768px) {
+    .split-slide-content,
+    .split-slide-image {
+      width: 50%;
+      padding: 40px; /* More padding on desktop */
+    }
+  }
+
+  /* Text Content Styling */
+  .split-slide-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center; /* Center align text content */
+    color: {{ section.settings.text_color }};
+  }
+
+  /* Conditional Reversal */
+  .split-slide[data-content-position="right"] {
+    flex-direction: column-reverse; /* Reorder for mobile */
+  }
+  @media screen and (min-width: 768px) {
+    .split-slide[data-content-position="right"] {
+      flex-direction: row-reverse; /* Swap sides on desktop */
+    }
+    /* Ensure image order is correct when content is on the right for mobile */
+    .split-slide[data-content-position="right"] .split-slide-image { order: 1; }
+    .split-slide[data-content-position="right"] .split-slide-content { order: 2; }
+  }
+
+  /* Headline Styling */
+  .split-slide-headline {
+    font-size: {{ section.settings.headline_size }}px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    font-family: {{ section.settings.headline_font }};
+    color: {{ section.settings.headline_color }};
+  }
+
+  /* Description Styling */
+  .split-slide-description {
+    font-size: {{ section.settings.description_size }}px;
+    margin-bottom: 20px;
+    font-family: {{ section.settings.description_font }};
+    color: {{ section.settings.description_color }};
+    text-align: left; /* Ensure description and accordion text look good */
+    max-width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .split-slide-content > * {
+    max-width: 600px; /* Limit text width for readability */
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+
+  /* Button Styling - Updated for size control */
+  .split-slide-button {
+    display: inline-block;
+    padding: {{ section.settings.button_padding_y }}px {{ section.settings.button_padding_x }}px;
+    text-decoration: none;
+    border: 1px solid {{ section.settings.button_color }};
+    background-color: {{ section.settings.button_bg_color }};
+    color: {{ section.settings.button_color }};
+    transition: all 0.2s ease-in-out;
+    font-family: {{ section.settings.description_font }};
+    font-size: {{ section.settings.description_size }}px; /* Match description size */
+  }
+  .split-slide-button:hover {
+    background-color: {{ section.settings.button_color }};
+    color: {{ section.settings.button_bg_color }}; /* Inverse colors on hover */
+  }
+
+  /* Image Styling */
+  .split-slide-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    max-height: 400px;
+  }
+
+  /* Navigation Dots */
+  .split-slideshow-dots {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+  }
+
+  .split-slideshow-dot {
+    height: 10px;
+    width: 10px;
+    margin: 0 5px;
+    background-color: #bbb;
+    border-radius: 50%;
+    display: inline-block;
+    cursor: pointer;
+    transition: background-color 0.6s ease;
+  }
+
+  .split-slideshow-dot.active {
+    background-color: {{ section.settings.dot_active_color }};
+  }
+  
+  /* --- ACCORDION STYLES --- */
+  .accordion-item {
+    border-top: 1px solid #ddd;
+    margin-top: 10px;
+    width: 100%;
+    text-align: left;
+  }
+  .accordion-item:last-child {
+      border-bottom: 1px solid #ddd;
+  }
+
+  .accordion-header {
+    padding: 15px 0;
+    cursor: pointer;
+    font-weight: 600;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: {{ section.settings.accordion_header_color }};
+    font-family: {{ section.settings.description_font }};
+  }
+
+  .accordion-icon {
+    transition: transform 0.3s ease;
+    font-size: 1.2em;
+  }
+
+  .accordion-header[aria-expanded="true"] .accordion-icon {
+    transform: rotate(45deg); /* Change icon on open */
+  }
+
+  .accordion-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease-in-out;
+    padding-bottom: 0;
+    color: {{ section.settings.description_color }};
+  }
+
+  .accordion-content p {
+    padding-bottom: 15px;
+    padding-top: 5px;
+    margin-bottom: 0;
+    font-size: {{ section.settings.description_size }}px;
+  }
+{% endstyle %}
+
+
+<section class="split-slideshow-{{ section.id }}">
+  <div class="split-slideshow-container" id="slideshow-{{ section.id }}">
+    <div class="split-slide-wrapper" data-slide-wrapper>
+
+      {%- for block in section.blocks -%}
+        {%- case block.type -%}
+          {%- when 'slide' -%}
+            <div class="split-slide"
+                 {{ block.shopify_attributes }}
+                 style="background-color: {{ block.settings.slide_bg_color_block }};"
+                 data-content-position="{{ block.settings.content_position }}"
+                 data-slide-index="{{ forloop.index0 }}">
+
+              {% comment %} {# LEFT SIDE: Content #} {% endcomment %}
+              <div class="split-slide-content">
+                <div class="slide-content-wrapper">
+                  {% if block.settings.headline != blank %}
+                    <h2 class="split-slide-headline">{{ block.settings.headline | escape }}</h2>
+                  {% endif %}
+
+                  {% if block.settings.description != blank %}
+                    <p class="split-slide-description">{{ block.settings.description | newline_to_br }}</p>
+                  {% endif %}
+                  
+                  {% comment %} {# ACCORDION ITEMS GO HERE #} {% endcomment %}
+                  <div class="accordion-group">
+                      {% for accordion_block in section.blocks %}
+                          {% case accordion_block.type %}
+                              {% when 'accordion_item' %}
+                                  {% if accordion_block.settings.group_id == block.settings.group_id %}
+                                      <div class="accordion-item" {{ accordion_block.shopify_attributes }}>
+                                          <div class="accordion-header" role="button" aria-expanded="false" aria-controls="accordion-content-{{ accordion_block.id }}" data-accordion-toggle>
+                                              {{ accordion_block.settings.title | escape }}
+                                              <span class="accordion-icon" aria-hidden="true">+</span>
+                                          </div>
+                                          <div id="accordion-content-{{ accordion_block.id }}" class="accordion-content">
+                                              <p>{{ accordion_block.settings.content | newline_to_br }}</p>
+                                          </div>
+                                      </div>
+                                  {% endif %}
+                              {% endcase %}
+                      {% endfor %}
+                  </div>
+                  {% comment %} {# END ACCORDION ITEMS #} {% endcomment %}
+
+                  {% if block.settings.button_text != blank and block.settings.button_link != blank %}
+                    <a href="{{ block.settings.button_link }}" class="split-slide-button" aria-label="{{ block.settings.button_text | escape }}">
+                      {{ block.settings.button_text | escape }}
+                    </a>
+                  {% endif %}
+                </div>
+              </div>
+
+              {% comment %} {# RIGHT SIDE: Image #} {% endcomment %}
+              <div class="split-slide-image">
+                {% if block.settings.image != blank %}
+                  {% assign img = block.settings.image %}
+                  <img src="{{ img | img_url: '1000x' }}"
+                       alt="{{ img.alt | default: block.settings.headline | escape }}"
+                       loading="lazy">
+                {% else %}
+                  {% comment %} Placeholder image for preview in theme editor {% endcomment %}
+                  <div style="padding-top: 56.25%; background-color: #f0f0f0;">
+                    <p style="text-align: center; line-height: 400px;">Image Placeholder</p>
+                  </div>
+                {% endif %}
+              </div>
+
+            </div>
+        {%- endcase -%}
+      {%- endfor -%}
+
+    </div>
+
+    {%- if section.blocks.size > 1 and section.settings.show_dots -%}
+      <div class="split-slideshow-dots" data-dots-container>
+        {% for i in (1..section.blocks.size) %}
+          <span class="split-slideshow-dot" data-dot-index="{{ forloop.index0 }}"></span>
+        {% endfor %}
+      </div>
+    {%- endif -%}
+
+  </div>
+</section>
+
+{% if section.blocks.size > 0 %}
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const sectionId = '{{ section.id }}';
+      const slideshowContainer = document.getElementById(`slideshow-${sectionId}`);
+      if (!slideshowContainer) return;
+
+      const slideWrapper = slideshowContainer.querySelector('[data-slide-wrapper]');
+      const slides = slideshowContainer.querySelectorAll('.split-slide');
+      const dotsContainer = slideshowContainer.querySelector('[data-dots-container]');
+      const dots = slideshowContainer.querySelectorAll('.split-slideshow-dot');
+      let currentSlide = 0;
+      const totalSlides = slides.length;
+      const autoplayInterval = {{ section.settings.autoplay_time | times: 1000 }}; // Convert seconds to ms
+      let intervalId;
+
+      // --- Slideshow Logic ---
+      
+      if (totalSlides > 1) {
+          const updateSlides = () => {
+            // Calculate the translation distance
+            const offset = -currentSlide * 100;
+            slideWrapper.style.transform = `translateX(${offset}%)`;
+
+            // Update active dot
+            if (dots.length > 0) {
+              dots.forEach(dot => dot.classList.remove('active'));
+              if (dots[currentSlide]) {
+                dots[currentSlide].classList.add('active');
+              }
+            }
+          };
+
+          const nextSlide = () => {
+            currentSlide = (currentSlide + 1) % totalSlides;
+            updateSlides();
+          };
+
+          const startAutoplay = () => {
+            if (autoplayInterval > 0) {
+              intervalId = setInterval(nextSlide, autoplayInterval);
+            }
+          };
+
+          const stopAutoplay = () => {
+            clearInterval(intervalId);
+          };
+
+          // Dot navigation handler
+          if (dotsContainer) {
+              dotsContainer.addEventListener('click', (event) => {
+                const dot = event.target.closest('.split-slideshow-dot');
+                if (dot) {
+                  stopAutoplay();
+                  currentSlide = parseInt(dot.getAttribute('data-dot-index'));
+                  updateSlides();
+                  startAutoplay(); // Restart autoplay after manual interaction
+                }
+              });
+          }
+          
+          // Initialize the first slide and autoplay
+          updateSlides();
+          startAutoplay();
+
+          // Optional: Stop autoplay on hover
+          slideshowContainer.addEventListener('mouseenter', stopAutoplay);
+          slideshowContainer.addEventListener('mouseleave', startAutoplay);
+      }
+
+      // --- Accordion Logic ---
+      
+      const accordionHeaders = slideshowContainer.querySelectorAll('[data-accordion-toggle]');
+
+      accordionHeaders.forEach(header => {
+          header.addEventListener('click', () => {
+              const item = header.closest('.accordion-item');
+              const content = header.nextElementSibling;
+              const isExpanded = header.getAttribute('aria-expanded') === 'true';
+
+              // Close all other accordions in the same slide (optional, but good UX)
+              const currentSlide = header.closest('.split-slide');
+              currentSlide.querySelectorAll('[data-accordion-toggle]').forEach(otherHeader => {
+                  if (otherHeader !== header) {
+                      otherHeader.setAttribute('aria-expanded', 'false');
+                      otherHeader.nextElementSibling.style.maxHeight = 0;
+                  }
+              });
+
+              // Toggle current accordion
+              if (isExpanded) {
+                  header.setAttribute('aria-expanded', 'false');
+                  content.style.maxHeight = 0;
+              } else {
+                  header.setAttribute('aria-expanded', 'true');
+                  content.style.maxHeight = content.scrollHeight + 30 + 'px'; // +30px buffer
+              }
+          });
+      });
+      
+    });
+  </script>
+{% endif %}
+
+
+{% comment %}
+  ============================================================
+  SECTION SCHEMA: Defines the customizable options in the Theme Editor
+  ============================================================
+{% endcomment %}
+
+{% schema %}
+{
+  "name": "Split Content Slideshow",
+  "tag": "section",
+  "class": "section-split-content-slideshow",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Section Layout & Colors"
+    },
+    {
+      "type": "range",
+      "id": "max_width",
+      "min": 800,
+      "max": 1400,
+      "step": 50,
+      "unit": "px",
+      "label": "Maximum content width",
+      "default": 1200
+    },
+    {
+      "type": "color",
+      "id": "section_bg_color",
+      "label": "Section Background Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "slide_bg_color",
+      "label": "Default Slide Background Color",
+      "default": "#f9f9f9"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Default Text Color",
+      "default": "#333333"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "label": "Padding Top",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "label": "Padding Bottom",
+      "default": 40
+    },
+    {
+      "type": "header",
+      "content": "Headline (H2) Options"
+    },
+    {
+      "type": "text",
+      "id": "headline_font",
+      "label": "Headline Font Family (e.g., Arial, 'Times New Roman')",
+      "default": "sans-serif"
+    },
+    {
+      "type": "range",
+      "id": "headline_size",
+      "min": 18,
+      "max": 48,
+      "step": 2,
+      "unit": "px",
+      "label": "Headline Font Size",
+      "default": 32
+    },
+    {
+      "type": "color",
+      "id": "headline_color",
+      "label": "Headline Color",
+      "default": "#000000"
+    },
+    {
+      "type": "header",
+      "content": "Description Text Options"
+    },
+    {
+      "type": "text",
+      "id": "description_font",
+      "label": "Description Font Family (e.g., Arial, 'Times New Roman')",
+      "default": "sans-serif"
+    },
+    {
+      "type": "range",
+      "id": "description_size",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "label": "Description Font Size",
+      "default": 16
+    },
+    {
+      "type": "color",
+      "id": "description_color",
+      "label": "Description Color",
+      "default": "#333333"
+    },
+    {
+      "type": "header",
+      "content": "Button Options"
+    },
+    {
+      "type": "range",
+      "id": "button_padding_y",
+      "min": 5,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "label": "Button Padding Vertical (Height)",
+      "default": 10
+    },
+    {
+      "type": "range",
+      "id": "button_padding_x",
+      "min": 10,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "label": "Button Padding Horizontal (Width)",
+      "default": 20
+    },
+    {
+      "type": "color",
+      "id": "button_bg_color",
+      "label": "Button Background Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "button_color",
+      "label": "Button Text/Border Color",
+      "default": "#000000"
+    },
+    {
+      "type": "header",
+      "content": "Slideshow Controls"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_dots",
+      "label": "Show Navigation Dots",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "autoplay_time",
+      "min": 0,
+      "max": 15,
+      "step": 1,
+      "unit": "s",
+      "label": "Autoplay slide duration (0 to disable)",
+      "default": 5
+    },
+    {
+      "type": "color",
+      "id": "dot_active_color",
+      "label": "Navigation Dot Active Color",
+      "default": "#000000"
+    },
+    {
+      "type": "header",
+      "content": "Accordion Controls"
+    },
+    {
+      "type": "color",
+      "id": "accordion_header_color",
+      "label": "Accordion Header Color",
+      "default": "#000000"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "slide",
+      "name": "Slide",
+      "limit": 6,
+      "settings": [
+        {
+          "type": "header",
+          "content": "Slide Content"
+        },
+        {
+          "type": "text",
+          "id": "group_id",
+          "label": "Group ID for Accordion",
+          "default": "slide-1",
+          "info": "Must match the Group ID setting in the Accordion Item blocks you want to show on this slide."
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Slide Image (Right Side)"
+        },
+        {
+          "type": "text",
+          "id": "headline",
+          "label": "Headline Title",
+          "default": "Amazing Feature"
+        },
+        {
+          "type": "textarea",
+          "id": "description",
+          "label": "Description Text (Above Accordion)",
+          "default": "Tell your customers about this great feature or product in a compelling paragraph."
+        },
+        {
+          "type": "text",
+          "id": "button_text",
+          "label": "Button Text",
+          "default": "Shop Now"
+        },
+        {
+          "type": "url",
+          "id": "button_link",
+          "label": "Button Link"
+        },
+        {
+          "type": "select",
+          "id": "content_position",
+          "label": "Content Position (Left/Right)",
+          "options": [
+            { "value": "left", "label": "Text on Left (Image on Right)" },
+            { "value": "right", "label": "Text on Right (Image on Left)" }
+          ],
+          "default": "left"
+        },
+        {
+          "type": "color",
+          "id": "slide_bg_color_block",
+          "label": "Specific Slide Background Color (Overrides default)",
+          "default": "#ffffff"
+        }
+      ]
+    },
+    {
+      "type": "accordion_item",
+      "name": "Accordion Item",
+      "settings": [
+        {
+          "type": "text",
+          "id": "group_id",
+          "label": "Group ID (Match Slide)",
+          "default": "slide-1",
+          "info": "This item will appear on the slide that has the matching Group ID."
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Accordion Header Title",
+          "default": "Frequently Asked Question"
+        },
+        {
+          "type": "textarea",
+          "id": "content",
+          "label": "Accordion Content Text",
+          "default": "This is the collapsible answer that appears when the header is clicked."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Split Content Slideshow",
+      "category": "Image",
+      "blocks": [
+        { "type": "slide" },
+        { "type": "slide" },
+        { "type": "accordion_item" },
+        { "type": "accordion_item" }
+      ]
+    }
+  ]
+}
+{% endschema %}

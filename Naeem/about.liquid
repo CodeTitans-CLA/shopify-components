@@ -1,0 +1,771 @@
+{% comment %}
+  LiftGravity About Section - fully dynamic (features, cards, FAQ as blocks)
+{% endcomment %}
+
+<style>
+:root {
+  --brand: {{ section.settings.brand_color }};
+  --accent: {{ section.settings.accent_color }};
+  --dark: #2B2B2B;
+  --light: {{ section.settings.background_light }};
+  --radius: 16px;
+  --shadow: 0 18px 40px rgba(0, 0, 0, .05);
+  --max: {{ section.settings.container_width }}px;
+  --ff: {{ section.settings.font_family.family }}, {{ section.settings.font_family.fallback_families }};
+}
+
+#lg-about-{{ section.id }} * {
+  box-sizing: border-box;
+}
+
+#lg-about-{{ section.id }} {
+  background: #fff;
+  font-family: var(--ff);
+  color: var(--dark);
+  font-weight: {{ section.settings.font_weight }};
+  font-size: {{ section.settings.font_size }}px;
+  line-height: 1.6;
+}
+
+/* ====== WIDTH VARIANTS ====== */
+#lg-about-{{ section.id }} .lg-page-wrap {
+  /* fallback */
+  width: 100%;
+}
+
+#lg-about-{{ section.id }} .lg-width-default {
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 1rem 3.5rem;
+}
+
+#lg-about-{{ section.id }} .lg-width-boxed {
+  width: min(100%, var(--max));
+  margin: 0 auto;
+  padding: 0 1rem 3.5rem;
+}
+
+#lg-about-{{ section.id }} .lg-width-full {
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: 0 0 3.5rem;
+}
+
+#lg-about-{{ section.id }} .lg-section-space {
+  margin-bottom: 3.2rem;
+}
+
+/* headings */
+#lg-about-{{ section.id }} h1,
+#lg-about-{{ section.id }} h2,
+#lg-about-{{ section.id }} h3,
+#lg-about-{{ section.id }} h4 {
+  font-weight: 700;
+  color: var(--dark);
+  margin-bottom: 0.75rem;
+}
+
+#lg-about-{{ section.id }} h1 {font-size: 40px; line-height: 1.12;}
+#lg-about-{{ section.id }} h2 {font-size: 34px; line-height: 1.12;}
+#lg-about-{{ section.id }} h3 {font-size: 22px; line-height: 1.2;}
+
+#lg-about-{{ section.id }} p {
+  font-size: {{ section.settings.font_size }}px;
+  line-height: 1.7;
+  color: rgba(43,43,43,.8);
+}
+
+#lg-about-{{ section.id }} .lg-badge {
+  display: inline-block;
+  background: rgba(91,58,41,.1);
+  color: var(--brand);
+  padding: .35rem 1rem;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 1rem;
+}
+
+#lg-about-{{ section.id }} .lg-btn {
+  background: var(--brand);
+  color: #fff;
+  border: none;
+  padding: .7rem 1.4rem;
+  border-radius: 6px;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 1.4;
+  cursor: pointer;
+  transition: background .25s ease, color .25s ease, transform .25s ease;
+  display: inline-block;
+  text-decoration: none;
+  margin-top: .8rem;
+}
+
+#lg-about-{{ section.id }} .lg-btn:hover {
+  background: var(--accent);
+  color: #2B2B2B;
+  transform: translateY(-1px);
+}
+
+#lg-about-{{ section.id }} .lg-btn.secondary {
+  background: #fff;
+  border: 1px solid rgba(91,58,41,.35);
+  color: var(--brand);
+}
+
+#lg-about-{{ section.id }} .lg-btn.secondary:hover {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #2B2B2B;
+}
+
+/* HERO */
+#lg-about-{{ section.id }} .lg-hero {
+  display: grid;
+  grid-template-columns: 1.05fr .95fr;
+  gap: 2.5rem;
+  align-items: center;
+  margin-top: 2.5rem;
+}
+
+#lg-about-{{ section.id }} .lg-hero-img {
+  {% if section.settings.hero_image != blank %}
+    background: url({{ section.settings.hero_image | image_url: width: 1200 }}) center/cover no-repeat;
+  {% else %}
+    background: #f7f5f3;
+  {% endif %}
+  border-radius: var(--radius);
+  min-height: 340px;
+  box-shadow: var(--shadow);
+}
+
+/* FEATURE BOX */
+#lg-about-{{ section.id }} .lg-feature-box {
+  display: grid;
+  grid-template-columns: .85fr 1.15fr;
+  background: #fff;
+  border: 1px solid #eee;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  gap: 0;
+}
+
+#lg-about-{{ section.id }} .lg-feature-left {
+  background: #FDF9EF;
+  padding: 1.8rem 1.4rem;
+}
+
+#lg-about-{{ section.id }} .lg-feature-right {
+  padding: 1.8rem;
+}
+
+#lg-about-{{ section.id }} .lg-feat-item {
+  background: #fff;
+  border: 1px solid rgba(227,181,5,.2);
+  border-radius: 10px;
+  padding: .6rem .8rem;
+  display: flex;
+  align-items: center;
+  gap: .6rem;
+  font-size: 15px;
+  font-weight: 500;
+  margin-bottom: .6rem;
+}
+
+#lg-about-{{ section.id }} .lg-feat-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 13px;
+  color: #2B2B2B;
+}
+
+#lg-about-{{ section.id }} .lg-checklist {
+  list-style: none;
+  margin-top: .6rem;
+}
+
+#lg-about-{{ section.id }} .lg-checklist li {
+  font-size: 15px;
+  margin-bottom: .35rem;
+}
+
+#lg-about-{{ section.id }} .lg-checklist li::before {
+  content: "• ";
+  color: var(--accent);
+  font-weight: 700;
+}
+
+/* AUDIENCE */
+#lg-about-{{ section.id }} .lg-audience {
+  background: var(--light);
+  padding: 3rem 2rem;
+  border-radius: 18px;
+}
+
+#lg-about-{{ section.id }} .lg-audience-title {
+  text-align: center;
+  margin-bottom: 2.2rem;
+}
+
+#lg-about-{{ section.id }} .lg-audience-cards {
+  display: grid;
+  grid-template-columns: repeat(3,1fr);
+  gap: 1.3rem;
+}
+
+#lg-about-{{ section.id }} .lg-aud-card {
+  background: #fff;
+  border: 1px solid rgba(91,58,41,.1);
+  border-radius: 14px;
+  box-shadow: 0 12px 20px rgba(0,0,0,.03);
+  text-align: center;
+  padding: 1.5rem 1.3rem 1.6rem;
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+
+#lg-about-{{ section.id }} .lg-aud-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 18px 30px rgba(0,0,0,.05);
+}
+
+#lg-about-{{ section.id }} .lg-aud-img {
+  width: 100%;
+  height: 150px;
+  border-radius: 12px;
+  margin-bottom: 1rem;
+  background: #f6f6f6;
+  background-size: cover;
+  background-position: center;
+}
+
+/* FAQ LAYOUT */
+#lg-about-{{ section.id }} .lg-faq-wrap {
+  display: grid;
+  grid-template-columns: 1.05fr .95fr;
+  gap: 2.2rem;
+  align-items: center;
+}
+
+#lg-about-{{ section.id }} .lg-faq-img {
+  {% if section.settings.faq_image != blank %}
+    background: url({{ section.settings.faq_image | image_url: width: 1200 }}) center/cover no-repeat;
+  {% else %}
+    background: #f2f2f2;
+  {% endif %}
+  min-height: 320px;
+  border-radius: 14px;
+  box-shadow: var(--shadow);
+}
+
+#lg-about-{{ section.id }} .lg-faq-box details {
+  background: #fff;
+  border: 1px solid rgba(91,58,41,.1);
+  border-radius: 12px;
+  padding: .65rem .8rem;
+  margin-bottom: .6rem;
+}
+
+#lg-about-{{ section.id }} .lg-faq-box summary {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  gap: .6rem;
+}
+
+#lg-about-{{ section.id }} .lg-faq-box summary::after {
+  content: "+";
+  color: var(--accent);
+  font-weight: 700;
+  font-size: 18px;
+}
+
+#lg-about-{{ section.id }} .lg-faq-box details[open] summary::after {
+  content: "–";
+}
+
+#lg-about-{{ section.id }} .lg-faq-box details p {
+  margin-top: .5rem;
+  font-size: 15px;
+  line-height: 1.5;
+  color: rgba(43,43,43,.8);
+}
+
+/* MODAL */
+#lg-about-{{ section.id }} .lg-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.25);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+  padding: 1rem;
+}
+
+#lg-about-{{ section.id }} .lg-modal-overlay.is-open {
+  display: flex;
+  animation: lgFadeIn .2s ease;
+}
+
+#lg-about-{{ section.id }} .lg-modal {
+  background: #fff;
+  width: min(100%, 540px);
+  border-radius: 16px;
+  box-shadow: 0 15px 55px rgba(0,0,0,.12);
+  padding: 1.3rem 1.3rem 1.4rem;
+  position: relative;
+  animation: lgZoomIn .18s ease;
+}
+
+#lg-about-{{ section.id }} .lg-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: .8rem;
+}
+
+#lg-about-{{ section.id }} .lg-modal-title {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+#lg-about-{{ section.id }} .lg-modal-close {
+  background: transparent;
+  border: none;
+  font-size: 20px;
+  color: #888;
+  cursor: pointer;
+  line-height: 1;
+}
+
+#lg-about-{{ section.id }} .lg-modal-close:hover {
+  color: #2B2B2B;
+}
+
+#lg-about-{{ section.id }} .lg-modal .field {
+  margin-bottom: .7rem;
+}
+
+#lg-about-{{ section.id }} .lg-modal label {
+  display: block;
+  font-size: 13px;
+  font-weight: 500;
+  margin-bottom: .2rem;
+}
+
+#lg-about-{{ section.id }} .lg-modal input,
+#lg-about-{{ section.id }} .lg-modal textarea {
+  width: 100%;
+  border: 1px solid rgba(0,0,0,.08);
+  border-radius: 8px;
+  padding: .45rem .55rem;
+  font-size: 15px;
+}
+
+#lg-about-{{ section.id }} .lg-modal textarea {
+  min-height: 110px;
+  resize: vertical;
+}
+
+@keyframes lgFadeIn {
+  from {opacity: 0;}
+  to {opacity: 1;}
+}
+@keyframes lgZoomIn {
+  from {transform: scale(.94);}
+  to {transform: scale(1);}
+}
+
+/* Responsive */
+@media (max-width: 991px){
+  #lg-about-{{ section.id }} .lg-hero,
+  #lg-about-{{ section.id }} .lg-feature-box,
+  #lg-about-{{ section.id }} .lg-faq-wrap {
+    grid-template-columns: 1fr;
+  }
+  #lg-about-{{ section.id }} .lg-audience-cards {
+    grid-template-columns: repeat(2,1fr);
+  }
+}
+
+@media (max-width: 767px){
+  #lg-about-{{ section.id }} .lg-audience-cards {
+    grid-template-columns: 1fr;
+  }
+  #lg-about-{{ section.id }} .lg-btn {
+    width: 100%;
+    text-align: center;
+  }
+  #lg-about-{{ section.id }} .lg-modal {
+    width: 100%;
+  }
+}
+
+/* ================================
+   1) Big desktop (max 1200px)
+   ================================ */
+@media (max-width: 1200px) {
+  #lg-about-{{ section.id }} h1 {
+    font-size: 36px;
+  }
+  #lg-about-{{ section.id }} .lg-audience-cards {
+    gap: 1.1rem;
+  }
+}
+
+/* ================================
+   2) Laptop / landscape tablet (max 1024px)
+   ================================ */
+@media (max-width: 1024px) {
+  #lg-about-{{ section.id }} .lg-hero,
+  #lg-about-{{ section.id }} .lg-faq-wrap,
+  #lg-about-{{ section.id }} .lg-feature-box {
+    grid-template-columns: 1fr;
+  }
+
+  #lg-about-{{ section.id }} .lg-hero-img,
+  #lg-about-{{ section.id }} .lg-faq-img {
+    min-height: 280px;
+  }
+
+  #lg-about-{{ section.id }} .lg-audience-cards {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* ================================
+   3) Tablet portrait (max 768px)
+   ================================ */
+@media (max-width: 768px) {
+  #lg-about-{{ section.id }} h1 {
+    font-size: 30px;
+  }
+  #lg-about-{{ section.id }} h2 {
+    font-size: 26px;
+  }
+  #lg-about-{{ section.id }} p {
+    font-size: 15px;
+  }
+
+  #lg-about-{{ section.id }} .lg-audience-cards {
+    grid-template-columns: 1fr;
+  }
+
+  #lg-about-{{ section.id }} .lg-btn {
+    width: 100%;
+    text-align: center;
+  }
+
+  #lg-about-{{ section.id }} .lg-modal {
+    width: 100%;
+    max-height: 95vh;
+    overflow-y: auto;
+  }
+}
+
+/* ================================
+   4) Small mobile (max 576px)
+   ================================ */
+@media (max-width: 576px) {
+  #lg-about-{{ section.id }} .lg-audience {
+    padding: 2.2rem 1.1rem;
+  }
+  #lg-about-{{ section.id }} .lg-feature-box {
+    border-radius: 14px;
+  }
+  #lg-about-{{ section.id }} .lg-faq-box details {
+    padding: .55rem .6rem;
+  }
+}
+
+/* ================================
+   5) Extra small (old phones, max 400px)
+   ================================ */
+@media (max-width: 400px) {
+  #lg-about-{{ section.id }} h1 {
+    font-size: 26px;
+  }
+  #lg-about-{{ section.id }} .lg-badge {
+    font-size: 13px;
+  }
+  #lg-about-{{ section.id }} .lg-aud-card {
+    padding: 1.1rem .8rem 1.2rem;
+  }
+  #lg-about-{{ section.id }} .lg-modal {
+    padding: 1rem .8rem 1.1rem;
+  }
+}
+</style>
+
+<div class="lg-about-wrap" id="lg-about-{{ section.id }}">
+  <div class="lg-page-wrap {% if section.settings.layout_width == 'full' %}lg-width-full{% elsif section.settings.layout_width == 'boxed' %}lg-width-boxed{% else %}lg-width-default{% endif %}">
+    <!-- HERO -->
+    <section class="lg-hero lg-section-space">
+      <div>
+        {% if section.settings.hero_badge != blank %}
+          <span class="lg-badge">{{ section.settings.hero_badge }}</span>
+        {% endif %}
+        <h1>{{ section.settings.hero_title }}</h1>
+        <p>{{ section.settings.hero_text }}</p>
+        {% if section.settings.hero_btn_label != blank %}
+          <a class="lg-btn" {% if section.settings.hero_btn_link != blank %}href="{{ section.settings.hero_btn_link }}"{% endif %}>
+            {{ section.settings.hero_btn_label }}
+          </a>
+        {% endif %}
+      </div>
+      <div class="lg-hero-img"></div>
+    </section>
+
+    <!-- FEATURE BOX -->
+    <section class="lg-feature-box lg-section-space">
+      <div class="lg-feature-left">
+        <h3>{{ section.settings.feature_left_title }}</h3>
+        {% for block in section.blocks %}
+          {% if block.type == 'feature_item' %}
+            <div class="lg-feat-item" {{ block.shopify_attributes }}>
+              <span class="lg-feat-icon">
+                {% if block.settings.feature_number != blank %}
+                  {{ block.settings.feature_number }}
+                {% else %}
+                  {{ forloop.index }}
+                {% endif %}
+              </span>
+              {{ block.settings.feature_text }}
+            </div>
+          {% endif %}
+        {% endfor %}
+      </div>
+      <div class="lg-feature-right">
+        <h3>{{ section.settings.feature_right_title }}</h3>
+        <p>{{ section.settings.feature_right_text }}</p>
+        <ul class="lg-checklist">
+          {% for block in section.blocks %}
+            {% if block.type == 'check_item' %}
+              <li {{ block.shopify_attributes }}>{{ block.settings.check_text }}</li>
+            {% endif %}
+          {% endfor %}
+        </ul>
+        {% if section.settings.feature_btn_label != blank %}
+          <a class="lg-btn secondary" {% if section.settings.feature_btn_link != blank %}href="{{ section.settings.feature_btn_link }}"{% endif %}>
+            {{ section.settings.feature_btn_label }}
+          </a>
+        {% endif %}
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="lg-faq-wrap lg-section-space">
+      <div class="lg-faq-img"></div>
+      <div class="lg-faq-box">
+        <h3>{{ section.settings.faq_title }}</h3>
+        <p>{{ section.settings.faq_intro }}</p>
+
+        {% for block in section.blocks %}
+          {% if block.type == 'faq_item' %}
+            <details {% if block.settings.faq_open %}open{% endif %} {{ block.shopify_attributes }}>
+              <summary>{{ block.settings.faq_question }}</summary>
+              <p>{{ block.settings.faq_answer }}</p>
+            </details>
+          {% endif %}
+        {% endfor %}
+
+        {% if section.settings.faq_btn_label != blank %}
+          <button type="button" class="lg-btn" id="lg-faq-btn-{{ section.id }}">
+            {{ section.settings.faq_btn_label }}
+          </button>
+        {% endif %}
+      </div>
+    </section>
+  </div>
+
+  <!-- MODAL CONTACT -->
+  <div class="lg-modal-overlay" id="lg-modal-overlay-{{ section.id }}">
+    <div class="lg-modal" role="dialog" aria-modal="true" aria-label="{{ section.settings.modal_title }}">
+      <div class="lg-modal-header">
+        <h4 class="lg-modal-title">{{ section.settings.modal_title }}</h4>
+        <button type="button" class="lg-modal-close" id="lg-modal-close-{{ section.id }}">&times;</button>
+      </div>
+      <p style="margin-bottom:.7rem;">{{ section.settings.modal_intro }}</p>
+      {% form 'contact' %}
+        <div class="field">
+          <label for="lg-name-{{ section.id }}">{{ section.settings.modal_name_label }}</label>
+          <input id="lg-name-{{ section.id }}" type="text" name="contact[name]" required>
+        </div>
+        <div class="field">
+          <label for="lg-email-{{ section.id }}">{{ section.settings.modal_email_label }}</label>
+          <input id="lg-email-{{ section.id }}" type="email" name="contact[email]" required>
+        </div>
+        <div class="field">
+          <label for="lg-message-{{ section.id }}">{{ section.settings.modal_message_label }}</label>
+          <textarea id="lg-message-{{ section.id }}" name="contact[body]" required></textarea>
+        </div>
+        <input type="hidden" name="contact[topic]" value="{{ section.settings.modal_hidden_topic }}">
+        <button type="submit" class="lg-btn" style="width:100%;text-align:center;">{{ section.settings.modal_submit_label }}</button>
+        {% if form.posted_successfully? %}
+          <p style="margin-top:.6rem;color:green;">{{ section.settings.modal_success_text }}</p>
+        {% endif %}
+        {% if form.errors %}
+          <p style="margin-top:.6rem;color:red;">{{ form.errors | default_errors }}</p>
+        {% endif %}
+      {% endform %}
+    </div>
+  </div>
+</div>
+
+<script>
+  (function() {
+    var btn = document.getElementById('lg-faq-btn-{{ section.id }}');
+    var overlay = document.getElementById('lg-modal-overlay-{{ section.id }}');
+    var closeBtn = document.getElementById('lg-modal-close-{{ section.id }}');
+
+    function openModal() {
+      if (overlay) {
+        overlay.classList.add('is-open');
+      }
+    }
+    function closeModal() {
+      if (overlay) {
+        overlay.classList.remove('is-open');
+      }
+    }
+
+    if (btn) {
+      btn.addEventListener('click', openModal);
+    }
+    if (closeBtn) {
+      closeBtn.addEventListener('click', closeModal);
+    }
+    if (overlay) {
+      overlay.addEventListener('click', function(e) {
+        if (e.target === overlay) {
+          closeModal();
+        }
+      });
+    }
+    document.addEventListener('keyup', function(e) {
+      if (e.key === 'Escape') {
+        closeModal();
+      }
+    });
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "LiftGravity About Section",
+  "settings": [
+    { "type": "image_picker", "id": "hero_image", "label": "Hero image" },
+    { "type": "image_picker", "id": "faq_image", "label": "FAQ image" },
+
+    { "type": "select", "id": "layout_width", "label": "Section width", "default": "boxed", "options": [
+      { "value": "default", "label": "Default" },
+      { "value": "full", "label": "Full width" },
+      { "value": "boxed", "label": "Container / boxed" }
+    ] },
+    
+
+    { "type": "color", "id": "brand_color", "label": "Brand color", "default": "#5B3A29" },
+    { "type": "color", "id": "accent_color", "label": "Accent color", "default": "#E3B505" },
+    { "type": "color", "id": "background_light", "label": "Light background color", "default": "#F4F4F4" },
+
+    { "type": "font_picker", "id": "font_family", "label": "Font family", "default": "poppins_n4" },
+    { "type": "range", "id": "font_size", "label": "Base font size", "min": 12, "max": 22, "step": 1, "default": 16, "unit": "px" },
+    { "type": "range", "id": "font_weight", "label": "Base font weight", "min": 300, "max": 700, "step": 100, "default": 400 },
+    { "type": "range", "id": "container_width", "label": "Container width (px)", "min": 800, "max": 1600, "step": 10, "default": 1180 },
+
+    { "type": "text", "id": "hero_badge", "label": "Hero badge", "default": "À propos de LiftGravity" },
+    { "type": "text", "id": "hero_title", "label": "Hero title", "default": "Conçu pour un entraînement réel." },
+    { "type": "textarea", "id": "hero_text", "label": "Hero text", "default": "Chez LiftGravity, nous développons des accessoires de musculation pensés pour la performance quotidienne : bandes de résistance, sangles de tirage, poignées pour câble, protections d’articulations et bouteilles assorties." },
+    { "type": "text", "id": "hero_btn_label", "label": "Hero button label", "default": "Découvrir nos produits" },
+    { "type": "url", "id": "hero_btn_link", "label": "Hero button link" },
+
+    { "type": "text", "id": "feature_left_title", "label": "Feature left title", "default": "Ce que nous fabriquons" },
+    { "type": "text", "id": "feature_right_title", "label": "Feature right title", "default": "Pourquoi choisir LiftGravity ?" },
+    { "type": "textarea", "id": "feature_right_text", "label": "Feature right text", "default": "Parce que chaque séance compte. Nous créons du matériel solide, esthétique et facile à utiliser, adapté aux studios, aux home gyms et aux coachs." },
+    { "type": "text", "id": "feature_btn_label", "label": "Feature button label", "default": "Voir la collection" },
+    { "type": "url", "id": "feature_btn_link", "label": "Feature button link" },
+
+    { "type": "text", "id": "audience_title", "label": "Audience title", "default": "Créé pour votre rythme d’entraînement" },
+    { "type": "textarea", "id": "audience_text", "label": "Audience text", "default": "Que vous coachiez, que vous vous entraîniez à domicile ou que vous équipiez une salle, nos accessoires restent cohérents en couleur, robustesse et design." },
+
+    { "type": "text", "id": "faq_title", "label": "FAQ title", "default": "Questions fréquentes" },
+    { "type": "textarea", "id": "faq_intro", "label": "FAQ intro", "default": "Voici les réponses aux questions les plus courantes avant de commander nos produits." },
+    { "type": "text", "id": "faq_btn_label", "label": "FAQ button label", "default": "Poser une question" },
+
+    { "type": "text", "id": "modal_title", "label": "Modal title", "default": "Poser une question" },
+    { "type": "textarea", "id": "modal_intro", "label": "Modal intro text", "default": "Écrivez-nous votre question sur un produit ou une commande, nous revenons vers vous rapidement." },
+    { "type": "text", "id": "modal_name_label", "label": "Modal name label", "default": "Nom complet" },
+    { "type": "text", "id": "modal_email_label", "label": "Modal email label", "default": "Adresse e-mail" },
+    { "type": "text", "id": "modal_message_label", "label": "Modal message label", "default": "Message" },
+    { "type": "text", "id": "modal_submit_label", "label": "Modal submit label", "default": "Envoyer le message" },
+    { "type": "text", "id": "modal_hidden_topic", "label": "Hidden topic value", "default": "Question client LiftGravity (section about)" },
+    { "type": "text", "id": "modal_success_text", "label": "Success message text", "default": "Merci, votre message a bien été envoyé." }
+  ],
+  "blocks": [
+    {
+      "type": "feature_item",
+      "name": "Feature item (left)",
+      "settings": [
+        { "type": "text", "id": "feature_number", "label": "Number / icon text", "default": "1" },
+        { "type": "text", "id": "feature_text", "label": "Feature text", "default": "Bandes de résistance (7–49 kg)" }
+      ]
+    },
+    {
+      "type": "check_item",
+      "name": "Feature checklist (right)",
+      "settings": [
+        { "type": "text", "id": "check_text", "label": "Checklist text", "default": "Niveaux de résistance codés par couleur" }
+      ]
+    },
+    {
+      "type": "audience_card",
+      "name": "Audience card",
+      "settings": [
+        { "type": "image_picker", "id": "card_image", "label": "Card image" },
+        { "type": "text", "id": "card_title", "label": "Card title", "default": "Essentiels musculation" },
+        { "type": "textarea", "id": "card_text", "label": "Card text", "default": "Bandes, sangles et supports pour les mouvements les plus utilisés." },
+        { "type": "text", "id": "card_btn_label", "label": "Card button label", "default": "Voir les essentiels" },
+        { "type": "url", "id": "card_btn_link", "label": "Card button link" }
+      ]
+    },
+    {
+      "type": "faq_item",
+      "name": "FAQ item",
+      "settings": [
+        { "type": "text", "id": "faq_question", "label": "FAQ question", "default": "Quel niveau de bande dois-je choisir ?" },
+        { "type": "textarea", "id": "faq_answer", "label": "FAQ answer", "default": "Commencez toujours par un niveau plus souple pour l’échauffement puis augmentez." },
+        { "type": "checkbox", "id": "faq_open", "label": "Open by default", "default": false }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "LiftGravity About Section",
+      "category": "Custom sections",
+      "blocks": [
+        { "type": "feature_item" },
+        { "type": "feature_item" },
+        { "type": "check_item" },
+        { "type": "audience_card" },
+        { "type": "audience_card" },
+        { "type": "audience_card" },
+        { "type": "faq_item" },
+        { "type": "faq_item" }
+      ]
+    }
+  ]
+}
+{% endschema %}

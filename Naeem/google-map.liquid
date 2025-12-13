@@ -1,0 +1,97 @@
+<!-- ====== MAP SECTION START ====== -->
+<section class="lg-map-section-full">
+  <div class="lg-map-card-full">
+    <h3 class="lg-map-title">Notre localisation</h3>
+    <p class="lg-map-text">
+      Sint-Pieters-Leeuw, Belgium
+    </p>
+
+    <div class="lg-map-wrapper-full">
+      <!-- Google Map centered at the exact address with red marker -->
+      <iframe
+        src="https://www.google.com/maps?q=Sint-Pieters-Leeuw,+Belgium&hl=fr&z=15&output=embed"
+        loading="lazy"
+        allowfullscreen
+        style="border:0;"
+        referrerpolicy="no-referrer-when-downgrade">
+      </iframe>
+    </div>
+  </div>
+
+  <style>
+    /* ========== FULL-WIDTH MAP SECTION ========== */
+    .lg-map-section-full {
+      width: 100%;
+      padding: 0;
+      background: #f7f5f3;
+    }
+
+    .lg-map-card-full {
+      width: 100%;
+      text-align: center;
+      padding: 40px 0px 20px;
+      background: #fff;
+      border-top: 1px solid rgba(0, 0, 0, 0.05);
+      border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    .lg-map-title {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: #5B3A29;
+      margin-bottom: 6px;
+    }
+
+    .lg-map-text {
+      font-size: 0.95rem;
+      color: rgba(0, 0, 0, 0.7);
+      margin-bottom: 18px;
+    }
+
+    .lg-map-wrapper-full {
+      position: relative;
+      width: 100%;
+      height: 0;
+      padding-bottom: 30%; /* reduced height */
+      overflow: hidden;
+    }
+
+    .lg-map-wrapper-full iframe {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+      filter: brightness(0.98);
+    }
+
+    /* ========== RESPONSIVE ========== */
+    @media (max-width: 992px) {
+      .lg-map-wrapper-full {
+        padding-bottom: 40%;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .lg-map-card-full {
+        padding: 30px 15px 15px;
+      }
+      .lg-map-title {
+        font-size: 1.2rem;
+      }
+      .lg-map-text {
+        font-size: 0.85rem;
+      }
+      .lg-map-wrapper-full {
+        padding-bottom: 50%;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .lg-map-wrapper-full {
+        padding-bottom: 60%;
+      }
+    }
+  </style>
+</section>
+<!-- ====== MAP SECTION END ====== -->
