@@ -1,12 +1,11 @@
-/*
- * ------------------------------------------------------------
- * IMPORTANT: The contents of this file are auto-generated.
- *
- * This file may be updated by the Shopify admin theme editor
- * or related systems. Please exercise caution as any changes
- * made to this file may be overwritten.
- * ------------------------------------------------------------
- */
+
+// IMPORTANT: The contents of this file are auto-generated.
+
+//  This file may be updated by the Shopify admin theme editor
+// or related systems. Please exercise caution as any changes
+//  made to this file may be overwritten.
+
+
 {
   "sections": {
     "custom_contact_layout": {
@@ -25,9 +24,8 @@
         "cta_banner_VEzwc4": {
           "type": "cta_banner",
           "settings": {
-            "cta_image": "shopify://shop_images/mid_banner.jpg",
             "cta_heading": "Let's Build Future Together.",
-            "cta_button_text": "",
+            "cta_button_text": "Get Started Now",
             "cta_button_link": "",
             "vertical_alignment": "center",
             "cta_heading_size": 36,
@@ -50,7 +48,7 @@
         "info_card_4PJrwa": {
           "type": "info-card",
           "settings": {
-            "icon_image": "shopify://shop_images/location_cb71c4d2-f65a-4a54-a5e3-fcd4ec046ccd.png",
+            "icon_image": "shopify://shop_images/IMG_6394.jpg",
             "title": "Our Location",
             "content": "993 Terrier Burg, West Pond, MT 94201-050",
             "card_link": "",
@@ -63,7 +61,6 @@
           "type": "info-card",
           "name": "Email US",
           "settings": {
-            "icon_image": "shopify://shop_images/mail_logo_42249f40-8534-43dd-bd4f-f133b1a9043e.png",
             "title": "Email US",
             "content": "info.@printstudio.com",
             "card_link": "",
@@ -76,7 +73,6 @@
           "type": "info-card",
           "name": "Call us",
           "settings": {
-            "icon_image": "shopify://shop_images/call_logo_45c01200-31a9-41f8-b5c8-a9b30954846b.png",
             "title": "Call US",
             "content": "+1 (202) 555-0134\n+1 (305) 555-0247",
             "card_link": "",
@@ -89,7 +85,6 @@
           "type": "info-card",
           "name": "live chat",
           "settings": {
-            "icon_image": "shopify://shop_images/live_chat_logo_5a1246c2-9dd6-4fb4-9aa4-c6c504645f3e.png",
             "title": "Live Chat",
             "content": "livechat@printstudio.com",
             "card_link": "",
