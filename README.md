@@ -1,4 +1,5 @@
 ﻿# shopify-components
-<img src="https://cdn-imgix.headout.com/media/images/c9db3cea62133b6a6bb70597326b4a34-388-dubai-img-worlds-of-adventure-tickets-01.jpg?auto=format&w=1222.3999999999999&h=687.6&q=90&ar=16%3A9&crop=faces&fit=crop">
+<img src="https://i.postimg.cc/rp2vRHXn/b5ba0cbb-8556-4d5c-8308-fefd6d87a9cf.jpg">
 
 <h1>Shipping Policy</h1>
+
