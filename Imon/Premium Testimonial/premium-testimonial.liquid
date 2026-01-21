@@ -1,0 +1,294 @@
+{%- style -%}
+  #m-section--{{ section.id }} {
+    background-color: {{ section.settings.background_color }};
+    padding-top: {{ section.settings.padding_top }}px;
+    padding-bottom: {{ section.settings.padding_bottom }}px;
+    --brand-orange: #F39200;
+    --brand-dark: #1A1A1A;
+    overflow: hidden;
+  }
+
+  .m-testimonials__wrapper {
+    position: relative;
+    padding: 0 15px;
+  }
+
+  /* কার্ডের আধুনিক লুক */
+  .testimonial-card {
+    background: #ffffff;
+    border-radius: 20px;
+    padding: 40px 30px;
+    margin: 20px 10px;
+    height: 100%; /* উচ্চতা সমান রাখার জন্য */
+    display: flex;
+    flex-direction: column;
+    transition: all 0.4s ease;
+    border: 1px solid rgba(0,0,0,0.05);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.04);
+    position: relative;
+    text-align: left;
+  }
+
+  .testimonial-card:hover {
+    transform: translateY(-10px);
+    border-color: var(--brand-orange);
+    box-shadow: 0 20px 40px rgba(243, 146, 0, 0.12);
+  }
+
+  /* স্টার রেটিং */
+  .m-stars {
+    color: var(--brand-orange);
+    margin-bottom: 20px;
+    display: flex;
+    gap: 4px;
+    font-size: 14px;
+  }
+
+  .testimonial-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--brand-dark);
+    margin-bottom: 12px;
+  }
+
+  .testimonial-content {
+    font-size: 15px;
+    line-height: 1.7;
+    color: #4A4A4A;
+    margin-bottom: 25px;
+    font-style: italic;
+  }
+
+  /* অথর সেকশন */
+  .testimonial-author {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-top: auto;
+    padding-top: 20px;
+    border-top: 1px solid rgba(0,0,0,0.06);
+  }
+
+  .author-image {
+    width: 55px;
+    height: 55px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--brand-orange);
+  }
+
+  .author-info h4 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--brand-dark);
+  }
+
+  .author-info p {
+    margin: 0;
+    font-size: 13px;
+    color: #888;
+  }
+
+  /* স্লাইডার নেভিগেশন ডটস - এখানে পরিবর্তন করা হয়েছে */
+  .m-testimonials__wrapper .swiper-pagination {
+    position: relative; /* ডটগুলোকে স্লাইডারের নিচে ফিক্সড জায়গা দেওয়ার জন্য */
+    margin-top: 40px;   /* কার্ড থেকে ৪০ পিক্সেল নিচে নামানো হয়েছে */
+    bottom: 0 !important;
+    line-height: 1;
+  }
+
+  .swiper-pagination-bullet {
+    width: 10px;
+    height: 10px;
+    background: #ccc !important;
+    opacity: 1;
+    transition: all 0.3s ease;
+  }
+
+  .swiper-pagination-bullet-active {
+    background: var(--brand-orange) !important;
+    width: 25px; /* অ্যাক্টিভ ডটটি একটু চওড়া হবে */
+    border-radius: 5px;
+  }
+
+  /* রেসপন্সিভ সেটিংস */
+  @media (max-width: 767px) {
+    .testimonial-card {
+      padding: 30px 20px;
+      text-align: center;
+    }
+    .m-stars { justify-content: center; }
+    .testimonial-author { 
+      flex-direction: column; 
+      text-align: center; 
+    }
+    .author-image { margin: 0 auto; }
+  }
+{%- endstyle -%}
+
+<section
+  id="m-section--{{ section.id }}"
+  class="m-section m-testimonials {{ section.settings.custom_class }}"
+>
+  <div class="{{ section.settings.container }}">
+    
+    <div class="m-testimonials__header m:text-{{ section.settings.header_alignment }}" style="margin-bottom: 40px;">
+      {% if section.settings.heading != blank %}
+        <h2 style="font-size: 36px; font-weight: 800; color: var(--brand-dark);">{{ section.settings.heading }}</h2>
+      {% endif %}
+      {% if section.settings.subheading != blank %}
+        <p style="color: var(--brand-orange); font-weight: 600; text-transform: uppercase; letter-spacing: 1px;">{{ section.settings.subheading }}</p>
+      {% endif %}
+    </div>
+
+    <div class="m-testimonials__wrapper">
+      <div class="swiper swiper-container-{{ section.id }}">
+        <div class="swiper-wrapper">
+          {% for block in section.blocks %}
+            <div class="swiper-slide" {{ block.shopify_attributes }}>
+              <div class="testimonial-card">
+                
+                {% if section.settings.show_stars %}
+                  <div class="m-stars">
+                    {% for i in (1..5) %}★{% endfor %}
+                  </div>
+                {% endif %}
+
+                <h3 class="testimonial-title">{{ block.settings.title }}</h3>
+                <div class="testimonial-content">{{ block.settings.description }}</div>
+
+                <div class="testimonial-author">
+                  {% if block.settings.image != blank %}
+                    <img class="author-image" src="{{ block.settings.image | image_url: width: 150 }}" alt="User" loading="lazy">
+                  {% else %}
+                    <div class="author-image" style="background: #eee; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #ccc;">U</div>
+                  {% endif %}
+                  <div class="author-info">
+                    <h4>{{ block.settings.footer | strip_html }}</h4>
+                    <p>Verified Customer ✅</p>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+        
+        <div class="swiper-pagination"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    new Swiper('.swiper-container-{{ section.id }}', {
+      slidesPerView: 1,
+      spaceBetween: 20,
+      loop: true,
+      autoplay: {
+        delay: 4000,
+        disableOnInteraction: false,
+      },
+      pagination: {
+        el: '.swiper-pagination',
+        clickable: true,
+      },
+      breakpoints: {
+        768: { slidesPerView: 2, spaceBetween: 30 },
+        1024: { slidesPerView: 3, spaceBetween: 30 }
+      }
+    });
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Testimonials Slider",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Customer Reviews"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "Trusted by Thousands"
+    },
+    {
+      "type": "select",
+      "id": "header_alignment",
+      "label": "Text alignment",
+      "default": "center",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "container",
+      "label": "Container type",
+      "default": "container",
+      "options": [
+        { "value": "container-fluid", "label": "Full Width" },
+        { "value": "container", "label": "Boxed" }
+      ]
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#f9f9f9"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_stars",
+      "label": "Show stars",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "default": 60,
+      "unit": "px",
+      "label": "Padding Top"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "default": 60,
+      "unit": "px",
+      "label": "Padding Bottom"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "testimonial",
+      "name": "Testimonial",
+      "settings": [
+        { "type": "text", "id": "title", "label": "Title", "default": "Great Quality" },
+        { "type": "richtext", "id": "description", "label": "Content", "default": "<p>Excellent service and product quality.</p>" },
+        { "type": "richtext", "id": "footer", "label": "Author Name", "default": "<p>Alex Thompson</p>" },
+        { "type": "image_picker", "id": "image", "label": "Author Image" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Testimonials Slider"
+    }
+  ]
+}
+{% endschema %}

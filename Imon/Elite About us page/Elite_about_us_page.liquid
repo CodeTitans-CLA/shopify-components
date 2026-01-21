@@ -1,0 +1,338 @@
+{% comment %}
+  Urban Reader Premium About Us Section
+  Optimized for Mobile, Tablet, Laptop & Desktop
+{% endcomment %}
+
+<style>
+  :root {
+    --brand-blue: {{ section.settings.brand_blue }};
+    --brand-red: {{ section.settings.brand_hover }};
+    --text-main: #2c3e50;
+    --text-light: #5a6c7d;
+    --white: #ffffff;
+  }
+
+  .ur-about-wrapper-{{ section.id }} {
+    padding: {{ section.settings.padding_top }}px 0 {{ section.settings.padding_bottom }}px;
+    background-color: {{ section.settings.bg_color }};
+    font-family: 'Inter', sans-serif;
+    overflow: hidden;
+  }
+
+  .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+
+  /* Universal Button */
+  .ur-btn {
+    display: inline-block;
+    padding: 16px 40px;
+    background-color: var(--brand-blue);
+    color: var(--white) !important;
+    text-decoration: none;
+    border-radius: 50px;
+    font-weight: 700;
+    transition: all 0.4s ease;
+    border: 2px solid var(--brand-blue);
+    font-size: 16px;
+    cursor: pointer;
+  }
+  .ur-btn:hover {
+    background-color: var(--brand-red);
+    border-color: var(--brand-red);
+    transform: translateY(-3px);
+    box-shadow: 0 12px 25px rgba(218, 63, 63, 0.25);
+  }
+
+  /* Hero Section */
+  .ur-hero {
+    display: flex;
+    align-items: center;
+    gap: 60px;
+    margin-bottom: 80px;
+  }
+  .ur-hero-content { flex: 1.2; }
+  .ur-hero-content h1 {
+    font-size: {{ section.settings.h1_size }}px;
+    color: var(--brand-blue);
+    text-transform: {{ section.settings.text_transform }};
+    margin-bottom: 25px;
+    line-height: 1.2;
+    font-weight: 800;
+  }
+  .ur-hero-content p {
+    font-size: {{ section.settings.p_size }}px;
+    color: var(--text-light);
+    line-height: 1.8;
+    margin-bottom: 35px;
+  }
+  .ur-hero-image { flex: 1; position: relative; }
+  .ur-hero-image img {
+    width: 100%;
+    border-radius: 25px;
+    box-shadow: 25px 25px 0px rgba(18, 155, 215, 0.1);
+    transition: transform 0.5s ease;
+    display: block;
+  }
+
+  /* Stats Section */
+  .ur-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    background: var(--brand-blue);
+    padding: 50px 30px;
+    border-radius: 30px;
+    margin-bottom: 80px;
+    color: var(--white);
+    text-align: center;
+    box-shadow: 0 15px 35px rgba(18, 155, 215, 0.2);
+  }
+  .stat-item h2 { font-size: 42px; margin-bottom: 5px; color: #fff; font-weight: 800; }
+  .stat-item p { font-size: 15px; opacity: 0.9; font-weight: 500; }
+
+  /* Features Grid */
+  .ur-grid-title { text-align: center; margin-bottom: 50px; }
+  .ur-grid-title h2 { font-size: 36px; color: var(--brand-blue); margin-bottom: 15px; font-weight: 800; }
+  
+  .ur-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+    margin-bottom: 100px;
+  }
+  .ur-card {
+    background: {{ section.settings.card_bg }};
+    padding: 50px 35px;
+    border-radius: 20px;
+    text-align: center;
+    border: 1px solid rgba(0,0,0,0.05);
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .ur-card:hover {
+    transform: translateY(-12px);
+    background: var(--white);
+    box-shadow: 0 25px 50px rgba(0,0,0,0.08);
+    border-color: var(--brand-blue);
+  }
+  .ur-card h3 { font-size: 24px; margin-bottom: 15px; color: var(--brand-blue); font-weight: 700; }
+  .ur-card p { font-size: 16px; color: var(--text-light); line-height: 1.6; }
+
+  /* Bookmobile Section */
+  .ur-bm-card {
+    display: flex;
+    align-items: center;
+    background: #ffffff;
+    border-radius: 40px;
+    overflow: hidden;
+    box-shadow: 0 30px 60px rgba(0,0,0,0.08);
+    border: 1px solid rgba(18, 155, 215, 0.1);
+    min-height: 480px;
+  }
+  .ur-bm-text-side { flex: 1.2; padding: 70px; }
+  .ur-bm-text-side span {
+    color: var(--brand-blue);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-size: 13px;
+    display: block;
+    margin-bottom: 12px;
+  }
+  .ur-bm-text-side h2 {
+    font-size: 40px;
+    color: var(--brand-red);
+    font-weight: 800;
+    margin-bottom: 22px;
+    line-height: 1.2;
+  }
+  .ur-bm-text-side p {
+    font-size: 18px;
+    color: var(--text-light);
+    line-height: 1.8;
+    margin-bottom: 35px;
+  }
+  .ur-bm-image-side {
+    flex: 1;
+    align-self: stretch;
+    position: relative;
+    overflow: hidden;
+    min-height: 400px;
+  }
+  .ur-bm-image-side img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 1s ease;
+    display: block;
+  }
+  .ur-bm-card:hover .ur-bm-image-side img { transform: scale(1.1); }
+  .ur-bm-badge {
+    position: absolute;
+    top: 25px;
+    right: 25px;
+    background: var(--brand-blue);
+    color: white;
+    padding: 8px 18px;
+    border-radius: 50px;
+    font-weight: 700;
+    font-size: 13px;
+    z-index: 3;
+  }
+
+  /* --- RESPONSIVE OPTIMIZATION --- */
+
+  /* Laptop & Small Desktop (up to 1200px) */
+  @media (max-width: 1199px) {
+    .ur-hero { gap: 40px; }
+    .ur-hero-content h1 { font-size: calc({{ section.settings.h1_size }}px * 0.85); }
+    .ur-bm-text-side { padding: 50px; }
+    .ur-bm-text-side h2 { font-size: 34px; }
+  }
+
+  /* Tablet (up to 991px) */
+  @media (max-width: 991px) {
+    .ur-hero { flex-direction: column; text-align: center; gap: 50px; }
+    .ur-hero-content { order: 2; }
+    .ur-hero-image { order: 1; width: 80%; margin: 0 auto; }
+    .ur-hero-image img { box-shadow: 15px 15px 0px rgba(18, 155, 215, 0.1); }
+    
+    .ur-stats { grid-template-columns: repeat(2, 1fr); padding: 40px 20px; gap: 15px; }
+    .stat-item h2 { font-size: 32px; }
+
+    .ur-grid { grid-template-columns: repeat(2, 1fr); gap: 20px; }
+    
+    .ur-bm-card { flex-direction: column-reverse; text-align: center; min-height: auto; }
+    .ur-bm-text-side { padding: 40px 20px; }
+    .ur-bm-image-side { width: 100%; min-height: 350px; }
+    .ur-bm-text-side h2 { font-size: 30px; }
+  }
+
+  /* Mobile (up to 767px) */
+  @media (max-width: 767px) {
+    .ur-about-wrapper-{{ section.id }} { padding: 50px 0; }
+    
+    .ur-hero-image { width: 100%; }
+    .ur-hero-content h1 { font-size: 32px; margin-bottom: 15px; }
+    .ur-hero-content p { font-size: 16px; margin-bottom: 25px; }
+    
+    .ur-stats { grid-template-columns: repeat(2, 1fr); border-radius: 20px; }
+    .stat-item h2 { font-size: 28px; }
+    
+    .ur-grid-title h2 { font-size: 28px; }
+    .ur-grid { grid-template-columns: 1fr; }
+    .ur-card { padding: 35px 25px; }
+    
+    .ur-bm-card { border-radius: 25px; }
+    .ur-bm-text-side h2 { font-size: 26px; }
+    .ur-bm-text-side p { font-size: 16px; }
+    .ur-btn { width: 100%; padding: 14px 25px; font-size: 15px; }
+  }
+</style>
+
+<div class="ur-about-wrapper-{{ section.id }}">
+  <div class="container">
+    
+    <div class="ur-hero">
+      <div class="ur-hero-content">
+        <h1>{{ section.settings.hero_title }}</h1>
+        <p>{{ section.settings.hero_desc }}</p>
+        <a href="{{ section.settings.btn_link }}" class="ur-btn">{{ section.settings.btn_text }}</a>
+      </div>
+      <div class="ur-hero-image">
+        {% if section.settings.hero_image %}
+          <img src="{{ section.settings.hero_image | img_url: '1000x' }}" alt="{{ section.settings.hero_title }}">
+        {% else %}
+          <img src="https://via.placeholder.com/800x600/129BD7/FFFFFF?text=The+Urban+Reader+Life" alt="Hero Image">
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="ur-stats">
+      <div class="stat-item"><h2>5k+</h2><p>New Titles</p></div>
+      <div class="stat-item"><h2>120+</h2><p>Diverse Authors</p></div>
+      <div class="stat-item"><h2>2k+</h2><p>Happy Readers</p></div>
+      <div class="stat-item"><h2>1</h2><p>Strong Community</p></div>
+    </div>
+
+    <div class="ur-grid-title">
+      <h2>The Urban Narrative</h2>
+      <p>Empowering readers through carefully curated African American literature.</p>
+    </div>
+    <div class="ur-grid">
+      <div class="ur-card">
+        <h3>Curated Selection</h3>
+        <p>A vast library showcasing the rich and diverse voices of African American authors and their compelling stories.</p>
+      </div>
+      <div class="ur-card">
+        <h3>Personal Service</h3>
+        <p>We take the time to learn your tastes, curating book selections delivered right to your home or business.</p>
+      </div>
+      <div class="ur-card">
+        <h3>Cultural Hub</h3>
+        <p>Urban Reader is more than a store; it’s a passionate community that celebrates culture, empathy, and knowledge.</p>
+      </div>
+    </div>
+
+    <div class="ur-bm-card">
+        <div class="ur-bm-text-side">
+            <span>Innovation on Wheels</span>
+            <h2>{{ section.settings.bm_title }}</h2>
+            <p>{{ section.settings.bm_desc }}</p>
+            <a href="{{ section.settings.bm_btn_link }}" class="ur-btn" style="background: var(--brand-red); border-color: var(--brand-red);">
+                {{ section.settings.bm_btn_text }}
+            </a>
+        </div>
+        
+        <div class="ur-bm-image-side">
+            <div class="ur-bm-badge">Now Touring</div>
+            {% if section.settings.bm_image %}
+                <img src="{{ section.settings.bm_image | img_url: '1000x1000', crop: 'center' }}" alt="Urban Bookmobile">
+            {% else %}
+                <img src="https://via.placeholder.com/1000x1000/DA3F3F/FFFFFF?text=Our+Bookmobile" alt="Bookmobile">
+            {% endif %}
+        </div>
+    </div>
+
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "About Us Premium",
+  "settings": [
+    { "type": "header", "content": "Global Styles" },
+    { "type": "color", "id": "brand_blue", "label": "Brand Blue", "default": "#129BD7" },
+    { "type": "color", "id": "brand_hover", "label": "Hover Red", "default": "#DA3F3F" },
+    { "type": "color", "id": "bg_color", "label": "Background Color", "default": "#ffffff" },
+    { "type": "color", "id": "card_bg", "label": "Card Background", "default": "#f8fafd" },
+    { "type": "range", "id": "h1_size", "min": 30, "max": 70, "step": 1, "unit": "px", "label": "H1 Font Size", "default": 50 },
+    { "type": "range", "id": "p_size", "min": 14, "max": 24, "step": 1, "unit": "px", "label": "P Font Size", "default": 18 },
+    {
+      "type": "select",
+      "id": "text_transform",
+      "label": "Heading Transform",
+      "options": [
+        { "value": "uppercase", "label": "UPPERCASE" },
+        { "value": "none", "label": "Normal" }
+      ],
+      "default": "none"
+    },
+    { "type": "header", "content": "Hero Content" },
+    { "type": "text", "id": "hero_title", "label": "Hero Title", "default": "Empowering Voices, One Page at a Time." },
+    { "type": "textarea", "id": "hero_desc", "label": "Hero Description", "default": "The Urban Reader is a vibrant literary hub specializing in African American books. We curate stories that celebrate diverse voices." },
+    { "type": "image_picker", "id": "hero_image", "label": "Hero Image" },
+    { "type": "text", "id": "btn_text", "label": "Hero Button Text", "default": "Shop Now" },
+    { "type": "url", "id": "btn_link", "label": "Hero Button Link" },
+    { "type": "header", "content": "Bookmobile Content" },
+    { "type": "text", "id": "bm_title", "label": "Bookmobile Title", "default": "Magic on Wheels" },
+    { "type": "textarea", "id": "bm_desc", "label": "Bookmobile Desc", "default": "Our innovative mobile bookstore brings the magic of literature directly to your doorstep, making culture accessible." },
+    { "type": "image_picker", "id": "bm_image", "label": "Bookmobile Image" },
+    { "type": "text", "id": "bm_btn_text", "label": "BM Button Text", "default": "Locate Us" },
+    { "type": "url", "id": "bm_btn_link", "label": "BM Button Link" },
+    { "type": "range", "id": "padding_top", "min": 20, "max": 150, "step": 5, "unit": "px", "label": "Padding Top", "default": 80 },
+    { "type": "range", "id": "padding_bottom", "min": 20, "max": 150, "step": 5, "unit": "px", "label": "Padding Bottom", "default": 80 }
+  ],
+  "presets": [
+    { "name": "About Us Premium" }
+  ]
+}
+{% endschema %}
